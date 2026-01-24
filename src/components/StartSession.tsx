@@ -32,7 +32,7 @@ const StartSession = ({
   const [newTagName, setNewTagName] = useState<string>('')
   const [newTagColor, setNewTagColor] = useState<string>('#ef5f33')
 
-  const colors = ['#ef5f33', '#f1c40f', '#4FD1C5', '#48BB78', '#0466c8', '#F687B3', '#9F7AEA']
+  const colors = ['#ef5f33', '#0466c8', '#f1c40f']
 
   const handleAddTag = () => {
     if (newTagName.trim()) {
@@ -47,25 +47,25 @@ const StartSession = ({
   return (
     <div className="min-h-extension flex flex-col animate-fadeIn">
       <header className="flex items-center justify-between px-5 py-4 animate-slideDown">
-        <button className="close-btn" onClick={onClose}>
+        <button className="w-10 h-10 flex items-center justify-center bg-transparent border-none cursor-pointer text-text-muted transition-all duration-300 hover:text-text-dark hover:rotate-90 active:rotate-90 active:scale-90 [&_svg]:w-6 [&_svg]:h-6" onClick={onClose}>
           <CloseIcon />
         </button>
-        <h2 className="font-serif text-xl font-bold">
-          <span className="italic font-normal">Start</span> working
+        <h2 className="serif-bold text-xl">
+          <span className="serif-regular italic">Start</span> working
         </h2>
         <div style={{ width: 40 }} />
       </header>
 
-      <div className="container">
-        <div className="toggle-container">
+      <div className="p-5 relative z-[1] animate-fadeIn">
+        <div className="flex bg-cream-dark rounded-full p-1 w-fit mx-auto border border-border">
           <button
-            className={cn("toggle-option", timerMode === 'countdown' && "active")}
+            className={cn("py-2.5 px-5 rounded-full border-none bg-transparent cursor-pointer flex items-center gap-2 coding-regular text-[13px] text-text-muted transition-all duration-300", timerMode === 'countdown' && "bg-white text-text-dark shadow-soft")}
             onClick={() => onSetTimerMode('countdown')}
           >
             <ClockIcon className="w-5 h-5" />
           </button>
           <button
-            className={cn("toggle-option", timerMode === 'stopwatch' && "active")}
+            className={cn("py-2.5 px-5 rounded-full border-none bg-transparent cursor-pointer flex items-center gap-2 coding-regular text-[13px] text-text-muted transition-all duration-300", timerMode === 'stopwatch' && "bg-white text-text-dark shadow-soft")}
             onClick={() => onSetTimerMode('stopwatch')}
           >
             <StopwatchIcon className="w-5 h-5" />
@@ -73,8 +73,8 @@ const StartSession = ({
         </div>
 
         <div className="text-center my-6">
-          <h3 className="text-lg font-semibold mb-1">{timerMode === 'stopwatch' ? 'Stopwatch timer' : 'Countdown timer'}</h3>
-          <p className="text-text-muted text-sm font-serif italic">{timerMode === 'stopwatch' ? 'work until done' : `focus for ${countdownMinutes} minutes`}</p>
+          <h3 className="sans-bold text-lg mb-1">{timerMode === 'stopwatch' ? 'Stopwatch timer' : 'Countdown timer'}</h3>
+          <p className="text-text-muted text-sm serif-regular italic">{timerMode === 'stopwatch' ? 'work until done' : `focus for ${countdownMinutes} minutes`}</p>
         </div>
 
         {timerMode === 'countdown' && (
@@ -96,12 +96,12 @@ const StartSession = ({
         )}
 
         <div className="mt-6 animate-slideUp" style={{ animationDelay: '0.1s' }}>
-          <h3 className="font-serif text-lg font-bold mb-1">Task goal</h3>
-          <p className="font-serif italic text-text-muted text-base mb-4">track how you spend your time</p>
+          <h3 className="serif-bold text-lg mb-1">Task goal</h3>
+          <p className="serif-regular italic text-text-muted text-base mb-4">track how you spend your time</p>
 
           <div className="flex flex-wrap gap-2">
             <button
-              className="inline-flex items-center gap-1.5 py-2.5 px-3.5 rounded-full text-sm font-medium bg-white border-2 border-dashed border-cream-dark cursor-pointer transition-all duration-200 hover:border-primary"
+              className="inline-flex items-center gap-1.5 py-2.5 px-3.5 rounded-full sans-regular text-sm bg-white border-2 border-dashed border-cream-dark cursor-pointer transition-all duration-200 hover:border-primary"
               onClick={() => setShowAddTag(true)}
             >
               <PlusIcon className="w-[18px] h-[18px] text-text-muted" />
@@ -110,7 +110,7 @@ const StartSession = ({
               <button
                 key={tag.id}
                 className={cn(
-                  "inline-flex items-center gap-1.5 py-2.5 px-4 rounded-full text-sm font-medium bg-cream-dark text-text-dark cursor-pointer transition-all duration-200 border-2 border-transparent",
+                  "inline-flex items-center gap-1.5 py-2.5 px-4 rounded-full sans-regular text-sm bg-cream-dark text-text-dark cursor-pointer transition-all duration-200 border-2 border-transparent",
                   selectedTag?.id === tag.id ? "bg-white" : "hover:border-current"
                 )}
                 onClick={() => onSelectTag(tag)}
@@ -124,7 +124,7 @@ const StartSession = ({
         </div>
 
         {showAddTag && (
-          <div className="card mt-4 animate-slideUp">
+          <div className="bg-white rounded-DEFAULT p-5 shadow-card mb-4 transition-all duration-300 hover:shadow-card-hover mt-4 animate-slideUp">
             <input
               type="text"
               placeholder="Tag name"
@@ -147,10 +147,10 @@ const StartSession = ({
               ))}
             </div>
             <div className="flex gap-2 justify-end">
-              <button className="btn btn-secondary py-2.5 px-5 text-sm" onClick={() => setShowAddTag(false)}>
+              <button className="inline-flex items-center justify-center gap-2 rounded-full coding-regular text-sm border-[1.5px] cursor-pointer transition-all duration-300 bg-primary-light border-crimson text-crimson py-2.5 px-5" onClick={() => setShowAddTag(false)}>
                 Cancel
               </button>
-              <button className="btn btn-primary py-2.5 px-5 text-sm" onClick={handleAddTag}>
+              <button className="inline-flex items-center justify-center gap-2 rounded-full coding-regular text-sm border-[1.5px] cursor-pointer transition-all duration-300 bg-crimson border-crimson text-white hover:bg-primary-dark hover:border-primary-dark hover:-translate-y-px hover:shadow-button active:translate-y-0 py-2.5 px-5" onClick={handleAddTag}>
                 Add
               </button>
             </div>

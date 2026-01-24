@@ -158,7 +158,7 @@ const ActiveSession = ({ session, onUpdateSession, onEndSession, onDiscard }: Ac
   return (
     <div className="min-h-extension flex flex-col p-5 animate-fadeIn">
       <header className="flex items-center justify-between bg-primary-blue-light rounded-DEFAULT px-4 py-3 mb-10 animate-slideDown">
-        <div className="flex items-center gap-2 text-sm font-medium text-primary-blue">
+        <div className="flex items-center gap-2 sans-regular text-sm text-primary-blue">
           <TagIcon color={session.tag.color} className="w-[18px] h-[18px]" />
           <span>{session.tag.name}</span>
         </div>
@@ -171,8 +171,8 @@ const ActiveSession = ({ session, onUpdateSession, onEndSession, onDiscard }: Ac
       </header>
 
       <div className="flex-1 flex flex-col items-center justify-center animate-scaleIn">
-        <p className="font-sans text-sm font-semibold tracking-[2px] text-text-muted mb-4">{isOnBreak ? 'ON BREAK' : 'FOCUSED'}</p>
-        <div className="font-sans text-[56px] font-light text-text-muted tracking-[2px] flex items-center">
+        <p className="coding-bold text-sm tracking-[2px] text-text-muted mb-4">{isOnBreak ? 'ON BREAK' : 'FOCUSED'}</p>
+        <div className="coding-regular text-[56px] text-text-muted tracking-[2px] flex items-center">
           <span>{time.hours}</span>
           <span className="mx-1">:</span>
           <span>{time.minutes}</span>
@@ -190,7 +190,7 @@ const ActiveSession = ({ session, onUpdateSession, onEndSession, onDiscard }: Ac
           <span className="p-4 rounded-full border-2 border-accent-green bg-accent-green/10 text-accent-green [&_svg]:w-7 [&_svg]:h-7 hover:bg-accent-green hover:text-white transition-all duration-200">
             <StopIcon />
           </span>
-          <span className="font-sans text-sm font-medium">Finish</span>
+          <span className="coding-regular text-sm">Finish</span>
         </button>
 
         <button
@@ -204,7 +204,7 @@ const ActiveSession = ({ session, onUpdateSession, onEndSession, onDiscard }: Ac
           )}>
             {isPaused ? <PlayIcon /> : <PauseIcon />}
           </span>
-          <span className="font-sans text-sm font-medium">{isPaused ? 'Resume' : 'Pause'}</span>
+          <span className="coding-regular text-sm">{isPaused ? 'Resume' : 'Pause'}</span>
         </button>
 
         <button
@@ -218,20 +218,20 @@ const ActiveSession = ({ session, onUpdateSession, onEndSession, onDiscard }: Ac
           )}>
             <CoffeeIcon />
           </span>
-          <span className="font-sans text-sm font-medium">{isOnBreak ? 'Focus' : 'Break'}</span>
+          <span className="coding-regular text-sm">{isOnBreak ? 'Focus' : 'Break'}</span>
         </button>
       </div>
 
       <div className="p-5 bg-primary-blue-light rounded-DEFAULT animate-slideUp" style={{ animationDelay: '0.3s' }}>
         <div className="flex justify-center gap-8">
           <div className="flex flex-col items-center gap-1">
-            <span className="font-sans text-lg font-semibold text-text-dark">{formatTime(elapsed).minutes}:{formatTime(elapsed).seconds}</span>
-            <span className="font-sans text-xs text-text-muted uppercase tracking-[1px]">focus</span>
+            <span className="coding-bold text-lg text-text-dark">{formatTime(elapsed).minutes}:{formatTime(elapsed).seconds}</span>
+            <span className="coding-regular text-xs text-text-muted uppercase tracking-[1px]">focus</span>
           </div>
           {breakElapsed > 0 && (
             <div className="flex flex-col items-center gap-1">
-              <span className="font-sans text-lg font-semibold text-text-dark">{formatTime(breakElapsed).minutes}:{formatTime(breakElapsed).seconds}</span>
-              <span className="font-sans text-xs text-text-muted uppercase tracking-[1px]">break</span>
+              <span className="coding-bold text-lg text-text-dark">{formatTime(breakElapsed).minutes}:{formatTime(breakElapsed).seconds}</span>
+              <span className="coding-regular text-xs text-text-muted uppercase tracking-[1px]">break</span>
             </div>
           )}
         </div>
@@ -252,17 +252,17 @@ const ActiveSession = ({ session, onUpdateSession, onEndSession, onDiscard }: Ac
               <div className="text-primary-blue mb-4">
                 <SaveIcon />
               </div>
-              <h3 className="font-sans text-xl font-semibold text-text-dark mb-6">Save your progress?</h3>
+              <h3 className="sans-bold text-xl text-text-dark mb-6">Save your progress?</h3>
 
               <div className="flex items-center justify-center gap-8 w-full">
                 <button
-                  className="bg-transparent border-none font-sans text-sm font-bold tracking-[1px] text-accent-red cursor-pointer hover:underline"
+                  className="bg-transparent border-none coding-bold text-sm tracking-[1px] text-accent-red cursor-pointer hover:underline"
                   onClick={handleDiscard}
                 >
                   DISCARD
                 </button>
                 <button
-                  className="bg-transparent border-none font-sans text-sm font-bold tracking-[1px] text-primary-blue cursor-pointer hover:underline"
+                  className="bg-transparent border-none coding-bold text-sm tracking-[1px] text-primary-blue cursor-pointer hover:underline"
                   onClick={handleSave}
                 >
                   SAVE

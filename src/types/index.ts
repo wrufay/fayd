@@ -39,6 +39,7 @@ export interface ChartDataItem {
 // API types
 export interface ApiMethods {
   createTag: (name: string, color: string) => Promise<Tag>
+  updateTag: (tagId: string, name: string, color: string) => Promise<Tag>
   deleteTag: (tagId: string) => Promise<void>
   createSession: (sessionData: Partial<Session>) => Promise<Session>
   deleteSession: (sessionId: string) => Promise<void>

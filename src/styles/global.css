@@ -1,249 +1,58 @@
-@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic+Coding:wght@400;700&family=Nanum+Gothic:wght@400;700;800&family=Nanum+Myeongjo:wght@400;700;800&family=Nanum+Pen+Script&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic+Coding:wght@400;700&family=Nanum+Gothic:wght@400;700;800&family=Nanum+Myeongjo:wght@400;700;800&family=Nanum+Pen+Script&family=JetBrains+Mono:wght@400;500&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* ============================================
-   BASE LAYER - Reset and root styles
+   COLOR PALETTE (CSS Variables)
+   ============================================ */
+:root {
+  --blue: #0466c8;
+  --crimson: #ef5f33;
+  --yellow: #f1c40f;
+  --cream: #FFFDF8;
+  --cream-dark: #FAF7F2;
+  --white: #FFFFFF;
+  --text-dark: #3D3D3D;
+  --text-muted: #9CA3AF;
+  --border: #E8E4DE;
+}
+
+/* ============================================
+   BASE LAYER
    ============================================ */
 @layer base {
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    transition: 0.3s ease;
-  }
-
   body {
     @apply font-sans bg-cream text-text-dark min-w-[380px] w-full min-h-screen overflow-x-hidden;
   }
 
-  /* Scrollbar styling (Chrome-specific) */
+  /* Scrollbar styling */
   ::-webkit-scrollbar {
-    width: 6px;
+    @apply w-[5px];
   }
   ::-webkit-scrollbar-track {
     @apply bg-cream;
   }
   ::-webkit-scrollbar-thumb {
-    @apply bg-cream-dark rounded-sm;
+    @apply bg-border rounded-[10px];
   }
 }
 
 /* ============================================
-   COMPONENTS LAYER - Reusable component classes
+   COMPONENTS LAYER
    ============================================ */
 @layer components {
-  /* App container */
   .app {
-    @apply flex flex-col min-h-screen bg-cream relative;
-  }
-
-  /* Background decorations - warm, subtle gradients */
-  .app::before {
-    content: '';
-    @apply absolute inset-0 pointer-events-none;
-    background-image:
-      radial-gradient(circle at 10% 20%, rgba(239, 95, 51, 0.04) 0%, transparent 50%),
-      radial-gradient(circle at 90% 80%, rgba(241, 196, 15, 0.04) 0%, transparent 50%);
-  }
-
-  /* Container */
-  .container {
-    @apply p-5 relative z-[1] animate-fadeIn;
-  }
-
-  /* Cards - softer, warmer look */
-  .card {
-    @apply bg-white rounded-DEFAULT p-5 shadow-card mb-4 animate-slideUp transition-all duration-200;
-  }
-
-  /* Buttons */
-  .btn {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full text-base font-semibold border-none cursor-pointer transition-all duration-200;
-  }
-
-  .btn-primary {
-    @apply bg-primary text-white hover:bg-primary-dark hover:-translate-y-0.5 hover:shadow-button active:translate-y-0 active:scale-[0.98];
-  }
-
-  .btn-secondary {
-    @apply bg-primary-light text-primary;
-  }
-
-  .btn-outline {
-    @apply bg-transparent border-2 border-primary text-primary;
-  }
-
-  .btn-icon {
-    @apply w-[60px] h-[60px] rounded-full p-0;
-  }
-
-  /* Tags */
-  .tag {
-    @apply inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium bg-cream-dark text-text-dark cursor-pointer transition-all duration-200 border-2 border-transparent;
-  }
-
-  .tag:hover {
-    @apply border-primary;
-  }
-
-  .tag.selected {
-    @apply border-primary bg-white animate-scaleIn;
-  }
-
-  .tag:active {
-    @apply scale-95;
-  }
-
-  .tag-icon {
-    @apply w-4 h-4 rounded;
-  }
-
-  /* Timer display */
-  .timer-display {
-    @apply text-[56px] font-light text-text-muted tracking-wide text-center font-sans;
-  }
-
-  .timer-display .active-digit {
-    @apply text-text-dark;
-  }
-
-  /* Toggle switch */
-  .toggle-container {
-    @apply flex bg-cream-dark rounded-full p-1 w-fit mx-auto;
-  }
-
-  .toggle-option {
-    @apply px-5 py-2.5 rounded-full border-none bg-transparent cursor-pointer flex items-center gap-2 text-sm text-text-muted transition-all duration-200;
-  }
-
-  .toggle-option.active {
-    @apply bg-primary text-white;
-  }
-
-  /* Navigation */
-  .nav {
-    @apply flex justify-around py-3 px-5 bg-white border-t border-cream-dark fixed bottom-0 left-0 right-0 w-full z-[100];
-  }
-
-  .nav-item {
-    @apply flex flex-col items-center gap-1 py-2 px-4 border-none bg-transparent cursor-pointer text-text-muted text-xs transition-colors duration-200;
-  }
-
-  .nav-item.active {
-    @apply text-primary;
-  }
-
-  .nav-item:active {
-    @apply scale-90;
-  }
-
-  .nav-item svg {
-    @apply w-6 h-6 transition-transform duration-200;
-  }
-
-  .nav-item:hover svg {
-    @apply -translate-y-0.5;
-  }
-
-  /* Modal */
-  .modal-overlay {
-    @apply fixed inset-0 bg-black/50 flex items-center justify-center z-[1000] animate-fadeIn;
-  }
-
-  .modal {
-    @apply bg-white rounded-DEFAULT w-[90%] max-w-[340px] max-h-[80%] overflow-hidden animate-modal;
-  }
-
-  .modal-header {
-    @apply flex items-center justify-between p-5 border-b border-cream-dark;
-  }
-
-  .modal-content {
-    @apply p-5 overflow-y-auto max-h-[400px];
-  }
-
-  .modal-close {
-    @apply w-8 h-8 flex items-center justify-center bg-transparent border-none cursor-pointer text-text-muted rounded-sm transition-all duration-200 hover:bg-cream-dark hover:text-text-dark;
-  }
-
-  /* Close button */
-  .close-btn {
-    @apply w-10 h-10 flex items-center justify-center bg-transparent border-none cursor-pointer text-text-muted transition-all duration-200;
-  }
-
-  .close-btn:hover {
-    @apply text-text-dark rotate-90;
-  }
-
-  .close-btn:active {
-    @apply rotate-90 scale-90;
-  }
-
-  .close-btn svg {
-    @apply w-6 h-6;
-  }
-
-  /* Color options */
-  .color-options {
-    @apply flex gap-2 mb-4;
-  }
-
-  .color-option {
-    @apply w-7 h-7 rounded-full border-[3px] border-transparent cursor-pointer transition-transform duration-200;
-  }
-
-  .color-option:hover {
-    @apply scale-110;
-  }
-
-  .color-option.selected {
-    @apply border-text-dark animate-scaleIn;
-  }
-
-  .color-option:active {
-    @apply scale-90;
-  }
-
-  /* Add tag form */
-  .add-tag-form {
-    @apply mt-4 animate-slideUp;
-  }
-
-  .add-tag-form input {
-    @apply w-full px-4 py-3 border-2 border-cream-dark rounded-sm text-sm outline-none mb-3 transition-colors duration-200;
-  }
-
-  .add-tag-form input:focus {
-    @apply border-primary;
-  }
-
-  .add-tag-actions {
-    @apply flex gap-2 justify-end;
-  }
-
-  .add-tag-actions .btn {
-    @apply px-5 py-2.5 text-sm;
-  }
-
-  /* Pen font utility classes */
-  .font-pen {
-    font-family: 'Nanum Pen Script', cursive;
-  }
-
-  .font-serif-bold {
-    font-family: 'Nanum Myeongjo', serif;
-    font-weight: 700;
+    @apply flex flex-col min-h-screen bg-cream relative max-w-[600px] mx-auto w-full;
   }
 }
 
 /* ============================================
-   UTILITIES LAYER - Custom utilities
+   UTILITIES LAYER
    ============================================ */
 @layer utilities {
-  /* Staggered animation delays for list items */
+  /* Staggered animation delays */
   .stagger-1 { animation-delay: 0.05s; }
   .stagger-2 { animation-delay: 0.1s; }
   .stagger-3 { animation-delay: 0.15s; }
@@ -251,4 +60,41 @@
   .stagger-5 { animation-delay: 0.25s; }
   .stagger-6 { animation-delay: 0.3s; }
   .stagger-7 { animation-delay: 0.35s; }
+
+  /* Font utilities */
+  .serif-regular {
+    font-family: "Nanum Myeongjo", serif;
+    font-weight: 400;  }
+  .serif-bold {
+    font-family: "Nanum Myeongjo", serif;
+    font-weight: 700;
+  }
+  .serif-extrabold {
+    font-family: "Nanum Myeongjo", serif;
+    font-weight: 800;
+  }
+  .pen-regular {
+    font-family: "Nanum Pen Script", cursive;
+    font-weight: 400;
+  }
+  .coding-regular {
+    font-family: "Nanum Gothic Coding", monospace;
+    font-weight: 400;
+  }
+  .coding-bold {
+    font-family: "Nanum Gothic Coding", monospace;
+    font-weight: 700;
+}
+  .sans-regular {
+    font-family: "Nanum Gothic", sans-serif;
+    font-weight: 400;
+}
+  .sans-bold {
+    font-family: "Nanum Gothic", sans-serif;
+    font-weight: 700;
+ }
+  .sans-extrabold {
+    font-family: "Nanum Gothic", sans-serif;
+    font-weight: 800;
+  }
 }

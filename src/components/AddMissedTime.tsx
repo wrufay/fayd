@@ -25,7 +25,7 @@ const AddMissedTime = ({
   const [newTagName, setNewTagName] = useState<string>('')
   const [newTagColor, setNewTagColor] = useState<string>('#ef5f33')
 
-  const colors = ['#ef5f33', '#f1c40f', '#4FD1C5', '#48BB78', '#0466c8', '#F687B3', '#9F7AEA']
+  const colors = ['#ef5f33', '#0466c8', '#f1c40f']
 
   const formatDate = (date: Date): string => {
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
@@ -92,26 +92,26 @@ const AddMissedTime = ({
   return (
     <div className="min-h-extension flex flex-col animate-fadeIn">
       <header className="flex items-center justify-between px-5 py-4 animate-slideDown">
-        <button className="close-btn" onClick={onClose}>
+        <button className="w-10 h-10 flex items-center justify-center bg-transparent border-none cursor-pointer text-text-muted transition-all duration-300 hover:text-text-dark hover:rotate-90 active:rotate-90 active:scale-90 [&_svg]:w-6 [&_svg]:h-6" onClick={onClose}>
           <CloseIcon />
         </button>
         <div className="text-center">
-          <h2 className="font-serif text-xl font-bold">
-            <span className="italic font-normal">Add</span> missed time
+          <h2 className="serif-bold text-xl">
+            <span className="serif-regular italic">Add</span> missed time
           </h2>
-          <p className="font-sans text-xs text-text-muted mt-0.5">On {formatDate(selectedDate)}</p>
+          <p className="sans-regular text-xs text-text-muted mt-0.5">On {formatDate(selectedDate)}</p>
         </div>
         <div style={{ width: 40 }} />
       </header>
 
-      <div className="container pt-2">
+      <div className="p-5 relative z-[1] animate-fadeIn pt-2">
         <div className="mt-0 animate-slideUp" style={{ animationDelay: '0.1s' }}>
-          <h3 className="font-serif text-lg font-bold mb-1">Task goal</h3>
-          <p className="font-serif italic text-text-muted text-base mb-4">track how you spend your time</p>
+          <h3 className="serif-bold text-lg mb-1">Task goal</h3>
+          <p className="serif-regular italic text-text-muted text-base mb-4">track how you spend your time</p>
 
           <div className="flex flex-wrap gap-2">
             <button
-              className="inline-flex items-center gap-1.5 py-2.5 px-3.5 rounded-full text-sm font-medium bg-white border-2 border-dashed border-cream-dark cursor-pointer transition-all duration-200 hover:border-primary"
+              className="inline-flex items-center gap-1.5 py-2.5 px-3.5 rounded-full sans-regular text-sm bg-white border-2 border-dashed border-cream-dark cursor-pointer transition-all duration-200 hover:border-primary"
               onClick={() => setShowAddTag(true)}
             >
               <PlusIcon className="w-[18px] h-[18px] text-text-muted" />
@@ -120,7 +120,7 @@ const AddMissedTime = ({
               <button
                 key={tag.id}
                 className={cn(
-                  "inline-flex items-center gap-1.5 py-2.5 px-4 rounded-full text-sm font-medium bg-cream-dark text-text-dark cursor-pointer transition-all duration-200 border-2 border-transparent",
+                  "inline-flex items-center gap-1.5 py-2.5 px-4 rounded-full sans-regular text-sm bg-cream-dark text-text-dark cursor-pointer transition-all duration-200 border-2 border-transparent",
                   selectedTag?.id === tag.id ? "bg-white" : "hover:border-current"
                 )}
                 onClick={() => setSelectedTag(tag)}
@@ -134,7 +134,7 @@ const AddMissedTime = ({
         </div>
 
         {showAddTag && (
-          <div className="card mt-4 animate-slideUp">
+          <div className="bg-white rounded-DEFAULT p-5 shadow-card mb-4 transition-all duration-300 hover:shadow-card-hover mt-4 animate-slideUp">
             <input
               type="text"
               placeholder="Tag name"
@@ -157,10 +157,10 @@ const AddMissedTime = ({
               ))}
             </div>
             <div className="flex gap-2 justify-end">
-              <button className="btn btn-secondary py-2.5 px-5 text-sm" onClick={() => setShowAddTag(false)}>
+              <button className="inline-flex items-center justify-center gap-2 rounded-full coding-regular text-sm border-[1.5px] cursor-pointer transition-all duration-300 bg-primary-light border-crimson text-crimson py-2.5 px-5" onClick={() => setShowAddTag(false)}>
                 Cancel
               </button>
-              <button className="btn btn-primary py-2.5 px-5 text-sm" onClick={handleAddTag}>
+              <button className="inline-flex items-center justify-center gap-2 rounded-full coding-regular text-sm border-[1.5px] cursor-pointer transition-all duration-300 bg-crimson border-crimson text-white hover:bg-primary-dark hover:border-primary-dark hover:-translate-y-px hover:shadow-button active:translate-y-0 py-2.5 px-5" onClick={handleAddTag}>
                 Add
               </button>
             </div>
@@ -168,7 +168,7 @@ const AddMissedTime = ({
         )}
 
         <div className="mt-8 animate-slideUp" style={{ animationDelay: '0.2s' }}>
-          <h3 className="font-serif text-lg font-bold mb-4">Time range</h3>
+          <h3 className="serif-bold text-lg mb-4">Time range</h3>
 
           <div className="flex items-center justify-center gap-4">
             <div className="flex flex-col items-center gap-2">
@@ -177,7 +177,7 @@ const AddMissedTime = ({
                 type="time"
                 value={startTime}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => setStartTime(e.target.value)}
-                className="px-4 py-3 border-2 border-cream-dark rounded-sm text-base font-medium text-text-dark outline-none focus:border-primary transition-colors bg-white text-center"
+                className="px-4 py-3 border-2 border-cream-dark rounded-sm sans-regular text-base text-text-dark outline-none focus:border-primary transition-colors bg-white text-center"
               />
             </div>
 
@@ -189,14 +189,14 @@ const AddMissedTime = ({
                 type="time"
                 value={endTime}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => setEndTime(e.target.value)}
-                className="px-4 py-3 border-2 border-cream-dark rounded-sm text-base font-medium text-text-dark outline-none focus:border-primary transition-colors bg-white text-center"
+                className="px-4 py-3 border-2 border-cream-dark rounded-sm sans-regular text-base text-text-dark outline-none focus:border-primary transition-colors bg-white text-center"
               />
             </div>
           </div>
 
           {duration > 0 && (
             <p className="text-center mt-4 text-sm text-text-muted animate-fadeIn">
-              Duration: <span className="font-semibold text-primary">{formatDuration(duration)}</span>
+              Duration: <span className="sans-bold text-primary">{formatDuration(duration)}</span>
             </p>
           )}
           {duration <= 0 && startTime && endTime && (
@@ -208,7 +208,7 @@ const AddMissedTime = ({
 
         <button
           className={cn(
-            "btn btn-primary mt-8 w-full py-4 text-base animate-slideUp",
+            "inline-flex items-center justify-center gap-2 py-3 px-6 rounded-full coding-regular text-sm border-[1.5px] cursor-pointer transition-all duration-300 bg-crimson border-crimson text-white hover:bg-primary-dark hover:border-primary-dark hover:-translate-y-px hover:shadow-button active:translate-y-0 mt-8 w-full py-4 text-base animate-slideUp",
             !canSave && "opacity-50 cursor-not-allowed"
           )}
           style={{ animationDelay: '0.3s' }}

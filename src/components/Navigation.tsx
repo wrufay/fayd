@@ -9,16 +9,22 @@ interface NavigationProps {
 
 const Navigation = ({ activeView, onNavigate }: NavigationProps) => {
   return (
-    <nav className="nav">
+    <nav className="flex justify-around py-3 px-5 bg-white border-t border-border fixed bottom-0 left-0 right-0 w-full z-[100]">
       <button
-        className={cn("nav-item", activeView === 'home' && "active")}
+        className={cn(
+          "flex flex-col items-center gap-1 py-2 px-4 border-none bg-transparent cursor-pointer text-text-muted coding-regular text-[11px] transition-all duration-300 [&_svg]:w-[22px] [&_svg]:h-[22px] [&_svg]:transition-transform [&_svg]:duration-300 hover:[&_svg]:-translate-y-0.5 active:scale-95",
+          activeView === 'home' && "text-blue"
+        )}
         onClick={() => onNavigate('home')}
       >
         <HomeIcon />
         <span>home</span>
       </button>
       <button
-        className={cn("nav-item", activeView === 'stats' && "active")}
+        className={cn(
+          "flex flex-col items-center gap-1 py-2 px-4 border-none bg-transparent cursor-pointer text-text-muted coding-regular text-[11px] transition-all duration-300 [&_svg]:w-[22px] [&_svg]:h-[22px] [&_svg]:transition-transform [&_svg]:duration-300 hover:[&_svg]:-translate-y-0.5 active:scale-95",
+          activeView === 'stats' && "text-blue"
+        )}
         onClick={() => onNavigate('stats')}
       >
         <StatsIcon />

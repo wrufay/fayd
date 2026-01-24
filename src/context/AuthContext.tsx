@@ -176,6 +176,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       return formatted
     },
 
+    updateTag: async (tagId: string, name: string, color: string) => {
+      const tag = await authFetch<BackendTag>(`/api/tags/${tagId}`, {
+        method: 'PUT',
+        body: JSON.stringify({ name, color }),
+      })
+      const formatted: Tag = { id: tag._id, name: tag.name, color: tag.color }
+      setTags(prev => prev.map(t => t.id === tagId ? formatted : t))
+      // Also update sessions that use this tag
+      setSessions(prev => prev.map(s =>
+        s.tag.id === tagId ? { ...s, tag: formatted } : s
+      ))
+      return formatted
+    },
+
     deleteTag: async (tagId: string) => {
       await authFetch(`/api/tags/${tagId}`, { method: 'DELETE' })
       setTags(prev => prev.filter(t => t.id !== tagId))

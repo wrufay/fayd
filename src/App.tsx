@@ -22,8 +22,6 @@ const DEFAULT_TAGS: Tag[] = [
   { id: '1', name: 'projects', color: '#ef5f33' },
   { id: '2', name: 'study', color: '#0466c8' },
   { id: '3', name: 'work', color: '#f1c40f' },
-  { id: '4', name: 'reading', color: '#48BB78' },
-  { id: '5', name: 'exercise', color: '#F687B3' },
 ]
 
 function AppContent() {
@@ -185,6 +183,28 @@ function AppContent() {
     }
   }
 
+  const updateTag = async (tagId: string, name: string, color: string) => {
+    if (user && api) {
+      try {
+        await api.updateTag(tagId, name, color)
+      } catch (error) {
+        console.error('Failed to update tag in cloud:', error)
+      }
+    } else {
+      const updatedTags = localTags.map(t =>
+        t.id === tagId ? { ...t, name, color } : t
+      )
+      setLocalTags(updatedTags)
+      saveToStorage('tags', updatedTags)
+      // Also update sessions that use this tag
+      const updatedSessions = localSessions.map(s =>
+        s.tag.id === tagId ? { ...s, tag: { ...s.tag, name, color } } : s
+      )
+      setLocalSessions(updatedSessions)
+      saveToStorage('sessions', updatedSessions)
+    }
+  }
+
   const addSession = async (session: Session) => {
     if (user && api) {
       try {
@@ -266,6 +286,7 @@ function AppContent() {
             tags={tags}
             onDeleteSession={deleteSession}
             onDeleteTag={deleteTag}
+            onUpdateTag={updateTag}
             onAddTag={addTag}
             onAddSession={addSession}
           />

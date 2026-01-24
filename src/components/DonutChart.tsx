@@ -22,7 +22,7 @@ const DonutChart = ({ data, size = 120, strokeWidth = 20 }: DonutChartProps) => 
           cy={center}
           r={radius}
           fill="none"
-          stroke="#E8EDFF"
+          stroke="rgba(4, 102, 200, 0.5)"
           strokeWidth={strokeWidth}
         />
       </svg>
@@ -67,7 +67,7 @@ const DonutChart = ({ data, size = 120, strokeWidth = 20 }: DonutChartProps) => 
         cy={center}
         r={radius}
         fill="none"
-        stroke="#E8EDFF"
+        stroke="rgba(4, 102, 200, 0.5)"
         strokeWidth={strokeWidth}
       />
       {/* Data segments */}

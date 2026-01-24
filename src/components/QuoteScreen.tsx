@@ -49,18 +49,18 @@ const QuoteScreen = ({ tag, timerMode }: QuoteScreenProps) => {
     <div className="min-h-extension flex flex-col justify-center items-center px-[30px] py-10 text-center animate-fadeIn-slow">
       <div className="flex-1 flex flex-col justify-center items-center max-w-[320px]">
         <QuoteIcon className="w-10 h-10 text-primary mb-6 opacity-60 animate-bounceIn-fast" />
-        <p className="font-serif text-xl italic leading-relaxed text-text-dark mb-4 animate-fadeIn-delay">
+        <p className="serif-regular text-xl italic leading-relaxed text-text-dark mb-4 animate-fadeIn-delay">
           {quote.text}
         </p>
-        <p className="font-pen text-lg text-primary" style={{ animation: 'fadeIn 0.6s ease-out 0.4s both' }}>
+        <p className="pen-regular text-lg text-primary" style={{ animation: 'fadeIn 0.6s ease-out 0.4s both' }}>
           — {quote.author}
         </p>
       </div>
 
       <div className="py-10" style={{ animation: 'slideUp 0.5s ease-out 0.6s both' }}>
         <div className="w-8 h-8 border-[3px] border-cream-dark border-t-primary rounded-full animate-spin mx-auto mb-4" />
-        <p className="font-sans text-sm text-text-dark mb-4">Starting #{tag?.name} {timerMode}...</p>
-        <button className="bg-transparent border-none text-text-muted text-sm font-semibold tracking-wide cursor-pointer underline hover:text-text-dark transition-colors">
+        <p className="sans-regular text-sm text-text-dark mb-4">Starting #{tag?.name} {timerMode}...</p>
+        <button className="bg-transparent border-none text-text-muted sans-bold text-sm tracking-wide cursor-pointer underline hover:text-text-dark transition-colors">
           CANCEL
         </button>
       </div>

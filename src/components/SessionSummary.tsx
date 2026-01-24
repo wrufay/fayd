@@ -52,10 +52,10 @@ const SessionSummary = ({ session, onClose, onViewStats }: SessionSummaryProps) 
   return (
     <div className="min-h-extension flex flex-col animate-fadeIn">
       <header className="flex items-center justify-between px-5 py-4 animate-slideDown">
-        <button className="close-btn" onClick={onClose}>
+        <button className="w-10 h-10 flex items-center justify-center bg-transparent border-none cursor-pointer text-text-muted transition-all duration-300 hover:text-text-dark hover:rotate-90 active:rotate-90 active:scale-90 [&_svg]:w-6 [&_svg]:h-6" onClick={onClose}>
           <CloseIcon />
         </button>
-        <span className="text-xs font-semibold tracking-widest text-text-muted">
+        <span className="sans-bold text-xs tracking-widest text-text-muted">
           {formatDate(session.startTime).toUpperCase()}
         </span>
         <div className="w-10" />
@@ -64,10 +64,10 @@ const SessionSummary = ({ session, onClose, onViewStats }: SessionSummaryProps) 
       <div className="bg-gradient-to-br from-primary-light to-cream-dark px-5 py-8 text-center animate-slideUp">
         <div className="flex items-center justify-center gap-3 mb-4 animate-scaleIn-delay">
           <span className="text-2xl animate-bounceIn">👏</span>
-          <span className="text-4xl font-light text-text-dark tracking-wide">{formatTime(totalTime)}</span>
+          <span className="coding-regular text-4xl text-text-dark tracking-wide">{formatTime(totalTime)}</span>
           <span className="text-2xl animate-bounceIn">👏</span>
         </div>
-        <div className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full text-sm font-medium animate-scaleIn-delay">
+        <div className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full sans-regular text-sm animate-scaleIn-delay">
           <TagIcon color={session.tag.color} className="w-4 h-4" />
           <span>{session.tag.name}</span>
         </div>
@@ -96,15 +96,15 @@ const SessionSummary = ({ session, onClose, onViewStats }: SessionSummaryProps) 
       <div className="px-5 py-4 border-t border-b border-cream-dark">
         <div className="flex justify-between py-2">
           <span className="text-sm text-text-muted">Start time:</span>
-          <span className="text-sm font-medium text-text-dark">{formatTimeOfDay(session.startTime)}</span>
+          <span className="sans-bold text-sm text-text-dark">{formatTimeOfDay(session.startTime)}</span>
         </div>
         <div className="flex justify-between py-2">
           <span className="text-sm text-text-muted">End time:</span>
-          <span className="text-sm font-medium text-text-dark">{formatTimeOfDay(session.endTime!)}</span>
+          <span className="sans-bold text-sm text-text-dark">{formatTimeOfDay(session.endTime!)}</span>
         </div>
       </div>
 
-      <button className="btn btn-primary mx-5 my-5 w-[calc(100%-40px)] animate-slideUp-delay" onClick={onViewStats}>
+      <button className="inline-flex items-center justify-center gap-2 py-3 px-6 rounded-full coding-regular text-sm border-[1.5px] cursor-pointer transition-all duration-300 bg-crimson border-crimson text-white hover:bg-primary-dark hover:border-primary-dark hover:-translate-y-px hover:shadow-button active:translate-y-0 mx-5 my-5 w-[calc(100%-40px)] animate-slideUp-delay" onClick={onViewStats}>
         SEE MORE STATS
       </button>
     </div>

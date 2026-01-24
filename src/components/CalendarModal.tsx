@@ -235,7 +235,7 @@ const CalendarModal = ({ isOpen, onClose, sessions, onAddMissedTime }: CalendarM
 
   return (
     <div className="fixed inset-0 bg-black/50 z-[200] flex items-start justify-center animate-fadeIn" onClick={onClose}>
-      <div className="w-extension max-h-full bg-background overflow-y-auto animate-slideUp" onClick={(e: MouseEvent) => e.stopPropagation()}>
+      <div className="w-extension max-h-full bg-cream overflow-y-auto animate-slideUp" onClick={(e: MouseEvent) => e.stopPropagation()}>
         <div className="flex justify-between items-center px-5 py-4 bg-white">
           <button className="bg-transparent border-none cursor-pointer p-2 text-text-muted hover:text-text-dark transition-colors [&_svg]:w-6 [&_svg]:h-6" onClick={onClose}>
             <CloseIcon />
@@ -247,27 +247,27 @@ const CalendarModal = ({ isOpen, onClose, sessions, onAddMissedTime }: CalendarM
           {/* Time Summary Cards */}
           <div className="flex gap-2 mb-6 overflow-x-auto pb-1">
             <div className="flex-1 min-w-[75px] bg-primary-blue-light rounded-[12px] py-3 px-2 text-center">
-              <span className="block font-sans text-[11px] font-medium text-primary-blue mb-1">This week</span>
-              <span className="block font-sans text-sm font-semibold text-text-dark">{formatDuration(timeSummaries.thisWeek)}</span>
+              <span className="block sans-regular text-[11px] text-primary-blue mb-1">This week</span>
+              <span className="block sans-bold text-sm text-text-dark">{formatDuration(timeSummaries.thisWeek)}</span>
             </div>
             <div className="flex-1 min-w-[75px] bg-primary-blue-light rounded-[12px] py-3 px-2 text-center">
-              <span className="block font-sans text-[11px] font-medium text-primary-blue mb-1">Last week</span>
-              <span className="block font-sans text-sm font-semibold text-text-dark">{formatDuration(timeSummaries.lastWeek)}</span>
+              <span className="block sans-regular text-[11px] text-primary-blue mb-1">Last week</span>
+              <span className="block sans-bold text-sm text-text-dark">{formatDuration(timeSummaries.lastWeek)}</span>
             </div>
             <div className="flex-1 min-w-[75px] bg-primary-blue-light rounded-[12px] py-3 px-2 text-center">
-              <span className="block font-sans text-[11px] font-medium text-primary-blue mb-1">This month</span>
-              <span className="block font-sans text-sm font-semibold text-text-dark">{formatDuration(timeSummaries.thisMonth)}</span>
+              <span className="block sans-regular text-[11px] text-primary-blue mb-1">This month</span>
+              <span className="block sans-bold text-sm text-text-dark">{formatDuration(timeSummaries.thisMonth)}</span>
             </div>
             <div className="flex-1 min-w-[75px] bg-primary-blue-light rounded-[12px] py-3 px-2 text-center">
-              <span className="block font-sans text-[11px] font-medium text-primary-blue mb-1">Prev month</span>
-              <span className="block font-sans text-sm font-semibold text-text-dark">{formatDuration(timeSummaries.lastMonth)}</span>
+              <span className="block sans-regular text-[11px] text-primary-blue mb-1">Prev month</span>
+              <span className="block sans-bold text-sm text-text-dark">{formatDuration(timeSummaries.lastMonth)}</span>
             </div>
           </div>
 
           {/* Streak */}
           <div className="flex items-center justify-center gap-3 mb-6">
             <span className="flex-1 h-px bg-gradient-to-r from-transparent via-text-muted to-transparent opacity-30"></span>
-            <span className="font-sans text-sm font-medium text-text-dark whitespace-nowrap">You're on a {streak} day streak!</span>
+            <span className="sans-regular text-sm text-text-dark whitespace-nowrap">You're on a {streak} day streak!</span>
             <span className="flex-1 h-px bg-gradient-to-r from-transparent via-text-muted to-transparent opacity-30"></span>
           </div>
 
@@ -276,7 +276,7 @@ const CalendarModal = ({ isOpen, onClose, sessions, onAddMissedTime }: CalendarM
             <button className="bg-transparent border-none cursor-pointer p-2 text-primary-blue hover:scale-110 transition-transform [&_svg]:w-6 [&_svg]:h-6" onClick={prevMonth}>
               <ChevronLeft />
             </button>
-            <span className="font-sans text-xl font-bold text-text-dark">{monthName}</span>
+            <span className="sans-bold text-xl text-text-dark">{monthName}</span>
             <button className="bg-transparent border-none cursor-pointer p-2 text-primary-blue hover:scale-110 transition-transform [&_svg]:w-6 [&_svg]:h-6" onClick={nextMonth}>
               <ChevronRight />
             </button>
@@ -286,7 +286,7 @@ const CalendarModal = ({ isOpen, onClose, sessions, onAddMissedTime }: CalendarM
           <div className="mb-6">
             <div className="grid grid-cols-7 mb-2">
               {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map(d => (
-                <span key={d} className="text-center font-sans text-xs font-medium text-text-muted py-2">{d}</span>
+                <span key={d} className="text-center sans-regular text-xs text-text-muted py-2">{d}</span>
               ))}
             </div>
             <div className="grid grid-cols-7 gap-1">
@@ -294,7 +294,7 @@ const CalendarModal = ({ isOpen, onClose, sessions, onAddMissedTime }: CalendarM
                 <button
                   key={i}
                   className={cn(
-                    "aspect-square flex items-center justify-center border-none bg-transparent font-sans text-base font-medium text-text-dark cursor-pointer rounded-full transition-all duration-200",
+                    "aspect-square flex items-center justify-center border-none bg-transparent sans-regular text-base text-text-dark cursor-pointer rounded-full transition-all duration-200",
                     !day && "cursor-default",
                     day && "hover:bg-primary-blue-light",
                     daysWithSessions.has(day as number) && !isToday(day) && "bg-primary-blue text-white",
@@ -314,8 +314,8 @@ const CalendarModal = ({ isOpen, onClose, sessions, onAddMissedTime }: CalendarM
           <div className="bg-white rounded-DEFAULT p-5 mt-4">
             <div className="flex justify-between items-start mb-4">
               <div>
-                <h3 className="font-sans text-lg font-bold text-text-dark mb-1">{formatDateLabel(selectedDate)}</h3>
-                <p className="font-sans text-xs font-medium text-text-muted tracking-[0.5px]">TOTAL TIME: {formatDuration(selectedDateTotal)}</p>
+                <h3 className="sans-bold text-lg text-text-dark mb-1">{formatDateLabel(selectedDate)}</h3>
+                <p className="sans-regular text-xs text-text-muted tracking-[0.5px]">TOTAL TIME: {formatDuration(selectedDateTotal)}</p>
               </div>
               <button
                 className="w-10 h-10 rounded-full border-2 border-primary-blue bg-transparent text-primary-blue cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-primary-blue hover:text-white [&_svg]:w-5 [&_svg]:h-5"
@@ -327,28 +327,27 @@ const CalendarModal = ({ isOpen, onClose, sessions, onAddMissedTime }: CalendarM
 
             <div className="flex flex-col gap-3 mb-4">
               {selectedDateSessions.length === 0 ? (
-                <p className="text-center text-text-muted font-sans text-sm py-5">No sessions on this day</p>
+                <p className="text-center text-text-muted sans-regular text-sm py-5">No sessions on this day</p>
               ) : (
                 selectedDateSessions.map(session => (
                   <div key={session.id} className="bg-primary-blue-light rounded-[12px] p-4 flex justify-between items-center cursor-pointer transition-transform duration-200 hover:translate-x-1">
                     <div className="flex-1">
-                      <span className="font-sans text-xs font-medium text-text-muted tracking-[0.3px] mb-1 block">
+                      <span className="sans-regular text-xs text-text-muted tracking-[0.3px] mb-1 block">
                         {new Date(session.startTime).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }).toUpperCase()} {formatTime(session.startTime)}-{formatTime(session.endTime!)}
                       </span>
                       <div className="flex items-center gap-2">
                         <TagIcon color={session.tag.color} />
-                        <span className="font-sans text-base font-bold text-text-dark">{session.tag.name}</span>
-                        <span className="font-sans text-sm text-text-muted">• {formatDuration(session.focusTime)}</span>
+                        <span className="sans-bold text-base text-text-dark">{session.tag.name}</span>
+                        <span className="sans-regular text-sm text-text-muted">• {formatDuration(session.focusTime)}</span>
                       </div>
                     </div>
-                    <ChevronRight />
                   </div>
                 ))
               )}
             </div>
 
             <button
-              className="block w-full text-center bg-transparent border-none font-sans text-sm font-semibold text-primary-blue tracking-[0.5px] cursor-pointer p-3 transition-opacity hover:opacity-80 hover:underline"
+              className="block w-full text-center bg-transparent border-none sans-bold text-sm text-primary-blue tracking-[0.5px] cursor-pointer p-3 transition-opacity hover:opacity-80 hover:underline"
               onClick={() => onAddMissedTime(selectedDate)}
             >
               ADD MISSED TIME

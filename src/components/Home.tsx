@@ -88,13 +88,15 @@ const Home = ({ sessions, tags, onStartSession }: HomeProps) => {
   }, [sessions])
 
   return (
-    <div className="container pb-20">
+    <div className="p-5 relative z-[1] animate-fadeIn pb-20">
       <header className="mb-6 animate-slideDown">
-        <p className="font-serif text-base italic text-text-muted mb-1">{greeting}{user ? `, ${user.name.split(' ')[0]}` : ''},</p>
-        <h1 className="font-serif text-xl font-normal text-text-dark">time to <span className="font-bold">f</span>orget <span className="font-bold">a</span>bout <span className="font-bold">y</span>our <span className="font-bold">d</span>istractions.</h1>
+        <p className="serif-regular text-base italic text-text-muted mb-1">{greeting}{user ? `, ${user.name.split(' ')[0]}` : ''},</p>
+        <h1 className="serif-regular text-xl text-text-dark">time to <span className="serif-bold">f</span>orget <span className="serif-bold">a</span>bout <span className="serif-bold">y</span>our <span className="serif-bold">d</span>istractions.</h1>
       </header>
 
-      <div className="card bg-gradient-to-br from-white to-cream animate-slideUp">
+
+      {/* front top container */}
+      <div className="bg-white rounded-lg p-5 shadow-md mb-4 transition-all duration-300 hover:shadow-card-hover bg-gradient-to-br from-white to-cream animate-slideUp">
         <div className="flex items-center gap-4 mb-5">
           <DonutChart
             data={[{ value: todayStats.focusMinutes, color: '#ef5f33' }]}
@@ -104,10 +106,10 @@ const Home = ({ sessions, tags, onStartSession }: HomeProps) => {
           <div className="flex-1">
             <p className="text-sm text-text-muted mb-1">today</p>
             <p className="text-xl text-text-dark">
-              <strong className="font-semibold">{todayStats.focusMinutes}m</strong>
+              <strong className="sans-bold">{todayStats.focusMinutes}m</strong>
             </p>
           </div>
-          <div className="flex items-center gap-1 bg-accent-yellow-light px-3 py-2 rounded-full text-sm font-semibold text-text-dark animate-scaleIn" style={{ animationDelay: '0.3s' }}>
+          <div className="flex items-center gap-1 bg-accent-yellow-light px-3 py-2 rounded-full sans-bold text-sm text-text-dark animate-scaleIn" style={{ animationDelay: '0.3s' }}>
             <span>{streak}d</span>
             <FireIcon className="w-4 h-4 text-accent-yellow animate-pulse" />
           </div>
@@ -138,14 +140,14 @@ const Home = ({ sessions, tags, onStartSession }: HomeProps) => {
       </div>
 
       <button
-        className="card !bg-gradient-to-br from-primary to-[#f57c54] !text-white border-none cursor-pointer text-left w-full transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:shadow-card-hover active:-translate-y-0.5 active:scale-[0.98] animate-slideUp"
+        className="bg-white rounded-md p-5 shadow-md mb-4 transition-all duration-300 !bg-primary-blue/70 !text-white border-none cursor-pointer text-left w-full hover:-translate-y-1 hover:scale-[1.02] hover:shadow-card-hover active:-translate-y-0.5 active:scale-[0.98] animate-slideUp"
         style={{ animationDelay: '0.2s' }}
         onClick={onStartSession}
       >
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="font-sans text-xl font-bold mb-1 text-white">Start focusing</h3>
-            <p className="font-serif text-base italic opacity-90 text-white">let's get things done</p>
+            <h3 className="sans-bold text-xl mb-1 text-white">Start focusing</h3>
+            <p className="serif-regular text-base italic opacity-90 text-white">let's get things done</p>
           </div>
           <div className="w-[50px] h-[50px] bg-white/20 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:bg-white/30">
             <PlayIcon className="w-5 h-5 ml-[3px] text-white" />
