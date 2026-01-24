@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic+Coding:wght@400;700&family=Nanum+Gothic:wght@400;700;800&family=Nanum+Myeongjo:wght@400;700;800&family=Nanum+Pen+Script&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -12,10 +12,11 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    transition: 0.3s ease;
   }
 
   body {
-    @apply font-sans bg-background text-text-dark w-extension min-h-extension overflow-x-hidden;
+    @apply font-sans bg-cream text-text-dark w-extension min-h-extension overflow-x-hidden;
   }
 
   /* Scrollbar styling (Chrome-specific) */
@@ -23,10 +24,10 @@
     width: 6px;
   }
   ::-webkit-scrollbar-track {
-    @apply bg-background;
+    @apply bg-cream;
   }
   ::-webkit-scrollbar-thumb {
-    @apply bg-primary-blue-light rounded-sm;
+    @apply bg-cream-dark rounded-sm;
   }
 }
 
@@ -36,16 +37,16 @@
 @layer components {
   /* App container */
   .app {
-    @apply flex flex-col min-h-extension bg-background relative;
+    @apply flex flex-col min-h-extension bg-cream relative;
   }
 
-  /* Background decorations */
+  /* Background decorations - warm, subtle gradients */
   .app::before {
     content: '';
     @apply absolute inset-0 pointer-events-none;
     background-image:
-      radial-gradient(circle at 10% 20%, rgba(75, 110, 245, 0.05) 0%, transparent 50%),
-      radial-gradient(circle at 90% 80%, rgba(246, 173, 85, 0.05) 0%, transparent 50%);
+      radial-gradient(circle at 10% 20%, rgba(239, 95, 51, 0.04) 0%, transparent 50%),
+      radial-gradient(circle at 90% 80%, rgba(241, 196, 15, 0.04) 0%, transparent 50%);
   }
 
   /* Container */
@@ -53,9 +54,9 @@
     @apply p-5 relative z-[1] animate-fadeIn;
   }
 
-  /* Cards */
+  /* Cards - softer, warmer look */
   .card {
-    @apply bg-background-card rounded-DEFAULT p-5 shadow-card mb-4 animate-slideUp transition-all duration-200;
+    @apply bg-white rounded-DEFAULT p-5 shadow-card mb-4 animate-slideUp transition-all duration-200;
   }
 
   /* Buttons */
@@ -64,15 +65,15 @@
   }
 
   .btn-primary {
-    @apply bg-primary-blue text-white hover:bg-primary-blue-dark hover:-translate-y-0.5 hover:shadow-button active:translate-y-0 active:scale-[0.98];
+    @apply bg-primary text-white hover:bg-primary-dark hover:-translate-y-0.5 hover:shadow-button active:translate-y-0 active:scale-[0.98];
   }
 
   .btn-secondary {
-    @apply bg-primary-blue-light text-primary-blue;
+    @apply bg-primary-light text-primary;
   }
 
   .btn-outline {
-    @apply bg-transparent border-2 border-primary-blue text-primary-blue;
+    @apply bg-transparent border-2 border-primary text-primary;
   }
 
   .btn-icon {
@@ -81,15 +82,15 @@
 
   /* Tags */
   .tag {
-    @apply inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium bg-primary-blue-light text-text-dark cursor-pointer transition-all duration-200 border-2 border-transparent;
+    @apply inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium bg-cream-dark text-text-dark cursor-pointer transition-all duration-200 border-2 border-transparent;
   }
 
   .tag:hover {
-    @apply border-primary-blue;
+    @apply border-primary;
   }
 
   .tag.selected {
-    @apply border-primary-blue bg-white animate-scaleIn;
+    @apply border-primary bg-white animate-scaleIn;
   }
 
   .tag:active {
@@ -111,7 +112,7 @@
 
   /* Toggle switch */
   .toggle-container {
-    @apply flex bg-primary-blue-light rounded-full p-1 w-fit mx-auto;
+    @apply flex bg-cream-dark rounded-full p-1 w-fit mx-auto;
   }
 
   .toggle-option {
@@ -119,12 +120,12 @@
   }
 
   .toggle-option.active {
-    @apply bg-primary-blue text-white;
+    @apply bg-primary text-white;
   }
 
   /* Navigation */
   .nav {
-    @apply flex justify-around py-3 px-5 bg-white border-t border-primary-blue-light fixed bottom-0 left-0 right-0 w-extension z-[100];
+    @apply flex justify-around py-3 px-5 bg-white border-t border-cream-dark fixed bottom-0 left-0 right-0 w-extension z-[100];
   }
 
   .nav-item {
@@ -132,7 +133,7 @@
   }
 
   .nav-item.active {
-    @apply text-primary-blue;
+    @apply text-primary;
   }
 
   .nav-item:active {
@@ -157,7 +158,7 @@
   }
 
   .modal-header {
-    @apply flex items-center justify-between p-5 border-b border-primary-blue-light;
+    @apply flex items-center justify-between p-5 border-b border-cream-dark;
   }
 
   .modal-content {
@@ -165,7 +166,7 @@
   }
 
   .modal-close {
-    @apply w-8 h-8 flex items-center justify-center bg-transparent border-none cursor-pointer text-text-muted rounded-sm transition-all duration-200 hover:bg-primary-blue-light hover:text-text-dark;
+    @apply w-8 h-8 flex items-center justify-center bg-transparent border-none cursor-pointer text-text-muted rounded-sm transition-all duration-200 hover:bg-cream-dark hover:text-text-dark;
   }
 
   /* Close button */
@@ -212,11 +213,11 @@
   }
 
   .add-tag-form input {
-    @apply w-full px-4 py-3 border-2 border-primary-blue-light rounded-sm text-sm outline-none mb-3 transition-colors duration-200;
+    @apply w-full px-4 py-3 border-2 border-cream-dark rounded-sm text-sm outline-none mb-3 transition-colors duration-200;
   }
 
   .add-tag-form input:focus {
-    @apply border-primary-blue;
+    @apply border-primary;
   }
 
   .add-tag-actions {
@@ -225,6 +226,16 @@
 
   .add-tag-actions .btn {
     @apply px-5 py-2.5 text-sm;
+  }
+
+  /* Pen font utility classes */
+  .font-pen {
+    font-family: 'Nanum Pen Script', cursive;
+  }
+
+  .font-serif-bold {
+    font-family: 'Nanum Myeongjo', serif;
+    font-weight: 700;
   }
 }
 

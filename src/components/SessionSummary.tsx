@@ -41,8 +41,8 @@ const SessionSummary = ({ session, onClose, onViewStats }: SessionSummaryProps) 
   }
 
   const chartData: ChartDataItem[] = useMemo(() => [
-    { id: 'focus', label: 'deep focus', value: session?.focusTime || 0, color: '#4B6EF5' },
-    { id: 'break', label: 'on break', value: session?.breakTime || 0, color: '#F6AD55' },
+    { id: 'focus', label: 'deep focus', value: session?.focusTime || 0, color: '#ef5f33' },
+    { id: 'break', label: 'on break', value: session?.breakTime || 0, color: '#f1c40f' },
   ], [session])
 
   const totalTime = (session?.focusTime || 0) + (session?.breakTime || 0)
@@ -61,7 +61,7 @@ const SessionSummary = ({ session, onClose, onViewStats }: SessionSummaryProps) 
         <div className="w-10" />
       </header>
 
-      <div className="bg-gradient-to-br from-primary-blue-light to-[#E0E7FF] px-5 py-8 text-center animate-slideUp">
+      <div className="bg-gradient-to-br from-primary-light to-cream-dark px-5 py-8 text-center animate-slideUp">
         <div className="flex items-center justify-center gap-3 mb-4 animate-scaleIn-delay">
           <span className="text-2xl animate-bounceIn">👏</span>
           <span className="text-4xl font-light text-text-dark tracking-wide">{formatTime(totalTime)}</span>
@@ -79,21 +79,21 @@ const SessionSummary = ({ session, onClose, onViewStats }: SessionSummaryProps) 
         </div>
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2 text-sm text-text-dark">
-            <span className="w-2.5 h-2.5 rounded-full flex-shrink-0 bg-primary-blue" />
+            <span className="w-2.5 h-2.5 rounded-full flex-shrink-0 bg-primary" />
             <span>{formatTimeShort(session.focusTime)} deep focus</span>
           </div>
           <div className="flex items-center gap-2 text-sm text-text-dark">
-            <span className="w-2.5 h-2.5 rounded-full flex-shrink-0 bg-primary-blue opacity-40" />
+            <span className="w-2.5 h-2.5 rounded-full flex-shrink-0 bg-primary opacity-40" />
             <span>0s multitasking</span>
           </div>
           <div className="flex items-center gap-2 text-sm text-text-dark">
-            <span className="w-2.5 h-2.5 rounded-full flex-shrink-0 bg-accent-orange" />
+            <span className="w-2.5 h-2.5 rounded-full flex-shrink-0 bg-accent-yellow" />
             <span>{formatTimeShort(session.breakTime)} on break</span>
           </div>
         </div>
       </div>
 
-      <div className="px-5 py-4 border-t border-b border-primary-blue-light">
+      <div className="px-5 py-4 border-t border-b border-cream-dark">
         <div className="flex justify-between py-2">
           <span className="text-sm text-text-muted">Start time:</span>
           <span className="text-sm font-medium text-text-dark">{formatTimeOfDay(session.startTime)}</span>

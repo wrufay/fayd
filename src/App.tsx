@@ -19,11 +19,11 @@ const VIEWS = {
 } as const
 
 const DEFAULT_TAGS: Tag[] = [
-  { id: '1', name: 'projects', color: '#F6AD55' },
-  { id: '2', name: 'study', color: '#4FD1C5' },
-  { id: '3', name: 'work', color: '#4B6EF5' },
+  { id: '1', name: 'projects', color: '#ef5f33' },
+  { id: '2', name: 'study', color: '#0466c8' },
+  { id: '3', name: 'work', color: '#f1c40f' },
   { id: '4', name: 'reading', color: '#48BB78' },
-  { id: '5', name: 'exercise', color: '#FC8181' },
+  { id: '5', name: 'exercise', color: '#F687B3' },
 ]
 
 function AppContent() {
@@ -53,9 +53,9 @@ function AppContent() {
       })
     } else {
       // Fallback to localStorage for development
-      const storedTags = localStorage.getItem('flipd-tags')
-      const storedSessions = localStorage.getItem('flipd-sessions')
-      const storedActiveSession = localStorage.getItem('flipd-activeSession')
+      const storedTags = localStorage.getItem('fayd-tags')
+      const storedSessions = localStorage.getItem('fayd-sessions')
+      const storedActiveSession = localStorage.getItem('fayd-activeSession')
       if (storedTags) setLocalTags(JSON.parse(storedTags))
       if (storedSessions) setLocalSessions(JSON.parse(storedSessions))
       if (storedActiveSession) {
@@ -78,9 +78,9 @@ function AppContent() {
       }
     } else {
       if (value === null) {
-        localStorage.removeItem(`flipd-${key}`)
+        localStorage.removeItem(`fayd-${key}`)
       } else {
-        localStorage.setItem(`flipd-${key}`, JSON.stringify(value))
+        localStorage.setItem(`fayd-${key}`, JSON.stringify(value))
       }
     }
   }

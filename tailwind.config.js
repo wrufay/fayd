@@ -7,32 +7,49 @@ export default {
   theme: {
     extend: {
       colors: {
-        'primary-blue': '#4B6EF5',
-        'primary-blue-light': '#E8EDFF',
-        'primary-blue-dark': '#3D5BD9',
-        'background': '#F5F7FF',
-        'background-card': '#FFFFFF',
-        'text-dark': '#2D3748',
-        'text-muted': '#718096',
-        'accent-orange': '#F6AD55',
+        // Fayd warm color palette
+        'cream': '#FDF8F3',
+        'cream-dark': '#F5EDE4',
+        'warm-white': '#FFFBF8',
+        'primary': '#ef5f33', // crimson/coral
+        'primary-light': '#FFF0EB',
+        'primary-dark': '#d94e25',
+        'secondary': '#0466c8', // aritzia blue
+        'secondary-light': '#E8F2FC',
+        'accent-yellow': '#f1c40f',
+        'accent-yellow-light': '#FEF9E7',
+        'text-dark': '#3D3D3D',
+        'text-muted': '#7A7A7A',
+        'text-light': '#A3A3A3',
         'accent-green': '#48BB78',
-        'accent-red': '#FC8181',
-        'accent-pink': '#F687B3',
+        'accent-red': '#E74C3C',
         'accent-teal': '#4FD1C5',
+        'accent-pink': '#F687B3',
+        'accent-orange': '#F6AD55',
+        // Keep legacy color names for compatibility during transition
+        'primary-blue': '#ef5f33',
+        'primary-blue-light': '#FFF0EB',
+        'primary-blue-dark': '#d94e25',
+        'background': '#FDF8F3',
+        'background-card': '#FFFFFF',
       },
       fontFamily: {
-        'serif': ['Libre Baskerville', 'Georgia', 'serif'],
-        'sans': ['DM Sans', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        'serif': ['Nanum Myeongjo', 'Libre Baskerville', 'Georgia', 'serif'],
+        'pen': ['Nanum Pen Script', 'cursive'],
+        'sans': ['Nanum Gothic', 'DM Sans', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        'mono': ['Nanum Gothic Coding', 'monospace'],
       },
       borderRadius: {
         'DEFAULT': '16px',
         'sm': '8px',
+        'lg': '24px',
       },
       boxShadow: {
-        'card': '0 4px 12px rgba(75, 110, 245, 0.15)',
-        'card-hover': '0 12px 32px rgba(75, 110, 245, 0.4)',
-        'button': '0 4px 12px rgba(75, 110, 245, 0.3)',
-        'dropdown': '0 8px 24px rgba(0, 0, 0, 0.15)',
+        'card': '0 4px 16px rgba(61, 61, 61, 0.08)',
+        'card-hover': '0 8px 32px rgba(61, 61, 61, 0.12)',
+        'button': '0 4px 12px rgba(239, 95, 51, 0.25)',
+        'dropdown': '0 8px 24px rgba(0, 0, 0, 0.1)',
+        'soft': '0 2px 8px rgba(61, 61, 61, 0.06)',
       },
       width: {
         'extension': '380px',
@@ -58,6 +75,7 @@ export default {
         'bounceIn-fast': 'bounceIn 0.6s ease-out',
         'float': 'float 3s ease-in-out infinite',
         'modal': 'scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+        'fadeInBounce': 'fadeInBounce 0.5s ease-out forwards',
       },
       keyframes: {
         fadeIn: {
@@ -73,7 +91,7 @@ export default {
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
         scaleIn: {
-          '0%': { opacity: '0', transform: 'scale(0.9)' },
+          '0%': { opacity: '0', transform: 'scale(0.95)' },
           '100%': { opacity: '1', transform: 'scale(1)' },
         },
         pulse: {
@@ -95,8 +113,14 @@ export default {
           '100%': { opacity: '1', transform: 'scale(1)' },
         },
         float: {
-          '0%, 100%': { transform: 'translateY(0)' },
-          '50%': { transform: 'translateY(-5px)' },
+          '0%, 100%': { transform: 'translateY(0) scale(1)' },
+          '50%': { transform: 'translateY(-4px) scale(1.02)' },
+        },
+        fadeInBounce: {
+          '0%': { opacity: '0', transform: 'translateY(10px) scale(0.95)' },
+          '60%': { opacity: '1', transform: 'translateY(-3px) scale(1.02)' },
+          '80%': { transform: 'translateY(1px) scale(0.99)' },
+          '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
         },
       },
       transitionTimingFunction: {
@@ -106,4 +130,3 @@ export default {
   },
   plugins: [],
 }
-

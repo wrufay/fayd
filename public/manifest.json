@@ -1,21 +1,21 @@
 {
   "manifest_version": 3,
-  "name": "Flipd Clone",
+  "name": "Fayd",
   "version": "1.0.0",
   "description": "Focus timer with time tracking and visualization",
   "permissions": ["storage", "alarms", "notifications"],
   "action": {
     "default_popup": "index.html",
     "default_icon": {
-      "16": "icons/flipd_logo.png",
-      "48": "icons/flipd_logo.png",
-      "128": "icons/flipd_logo.png"
+      "16": "icons/fayd_logo.png",
+      "48": "icons/fayd_logo.png",
+      "128": "icons/fayd_logo.png"
     }
   },
   "icons": {
-    "16": "icons/flipd_logo.png",
-    "48": "icons/flipd_logo.png",
-    "128": "icons/flipd_logo.png"
+    "16": "icons/fayd_logo.png",
+    "48": "icons/fayd_logo.png",
+    "128": "icons/fayd_logo.png"
   },
   "background": {
     "service_worker": "background.js",

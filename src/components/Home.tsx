@@ -100,19 +100,19 @@ const Home = ({ sessions, tags, onStartSession }: HomeProps) => {
     <div className="container pb-20">
       <header className="flex justify-between items-start mb-6 animate-slideDown">
         <div>
-          <p className="font-sans text-base text-text-muted italic font-normal mb-1">{greeting}{user ? `, ${user.name.split(' ')[0]}` : ''}</p>
-          <h1 className="font-sans text-[32px] font-bold">Focus</h1>
+          <p className="font-pen text-xl text-text-muted mb-1">{greeting}{user ? `, ${user.name.split(' ')[0]}` : ''}</p>
+          <h1 className="font-serif text-[28px] font-bold text-text-dark">Fayd</h1>
         </div>
         {user ? (
           <button
-            className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-[20px] font-sans text-[13px] font-medium text-text-dark cursor-pointer transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-px active:translate-y-0 active:scale-[0.98]"
+            className="flex items-center gap-2 px-4 py-2 bg-white border border-cream-dark rounded-full font-sans text-[13px] font-medium text-text-dark cursor-pointer transition-all duration-200 shadow-soft hover:shadow-card hover:-translate-y-px active:translate-y-0 active:scale-[0.98]"
             onClick={logout}
           >
             <span>Log out</span>
           </button>
         ) : (
           <button
-            className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-[20px] font-sans text-[13px] font-medium text-text-dark cursor-pointer transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-px active:translate-y-0 active:scale-[0.98]"
+            className="flex items-center gap-2 px-4 py-2 bg-white border border-cream-dark rounded-full font-sans text-[13px] font-medium text-text-dark cursor-pointer transition-all duration-200 shadow-soft hover:shadow-card hover:-translate-y-px active:translate-y-0 active:scale-[0.98]"
             onClick={login}
           >
             <GoogleIcon />
@@ -121,10 +121,10 @@ const Home = ({ sessions, tags, onStartSession }: HomeProps) => {
         )}
       </header>
 
-      <div className="card bg-gradient-to-br from-white to-[#F5F7FF] animate-slideUp">
+      <div className="card bg-gradient-to-br from-white to-cream animate-slideUp">
         <div className="flex items-center gap-4 mb-5">
           <DonutChart
-            data={[{ value: todayStats.focusMinutes, color: '#4B6EF5' }]}
+            data={[{ value: todayStats.focusMinutes, color: '#ef5f33' }]}
             size={80}
             strokeWidth={12}
           />
@@ -134,9 +134,9 @@ const Home = ({ sessions, tags, onStartSession }: HomeProps) => {
               <strong className="font-semibold">{todayStats.focusMinutes}m</strong>
             </p>
           </div>
-          <div className="flex items-center gap-1 bg-primary-blue-light px-3 py-2 rounded-full text-sm font-semibold text-text-dark animate-scaleIn" style={{ animationDelay: '0.3s' }}>
+          <div className="flex items-center gap-1 bg-accent-yellow-light px-3 py-2 rounded-full text-sm font-semibold text-text-dark animate-scaleIn" style={{ animationDelay: '0.3s' }}>
             <span>{streak}d</span>
-            <FireIcon className="w-4 h-4 text-accent-orange animate-pulse" />
+            <FireIcon className="w-4 h-4 text-accent-yellow animate-pulse" />
           </div>
         </div>
         <div className="flex justify-between gap-2">
@@ -144,9 +144,9 @@ const Home = ({ sessions, tags, onStartSession }: HomeProps) => {
             <div
               key={i}
               className={cn(
-                "w-9 h-9 flex items-center justify-center rounded-full text-xs bg-background animate-scaleIn transition-all duration-200",
-                day.completed ? "bg-primary-blue text-white" : "text-text-muted",
-                day.isToday && !day.completed && "border-2 border-primary-blue-light"
+                "w-9 h-9 flex items-center justify-center rounded-full text-xs bg-cream animate-scaleIn transition-all duration-200",
+                day.completed ? "bg-primary text-white" : "text-text-muted",
+                day.isToday && !day.completed && "border-2 border-primary-light"
               )}
               style={{ animationDelay: `${0.1 + i * 0.05}s` }}
             >
@@ -165,14 +165,14 @@ const Home = ({ sessions, tags, onStartSession }: HomeProps) => {
       </div>
 
       <button
-        className="card !bg-gradient-to-br from-primary-blue to-[#6B8DF7] !text-white border-none cursor-pointer text-left w-full transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:shadow-[0_12px_32px_rgba(75,110,245,0.4)] active:-translate-y-0.5 active:scale-[0.98] animate-slideUp"
+        className="card !bg-gradient-to-br from-primary to-[#f57c54] !text-white border-none cursor-pointer text-left w-full transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:shadow-card-hover active:-translate-y-0.5 active:scale-[0.98] animate-slideUp"
         style={{ animationDelay: '0.2s' }}
         onClick={onStartSession}
       >
         <div className="flex items-center justify-between">
           <div>
             <h3 className="font-sans text-xl font-bold mb-1 text-white">Start focusing</h3>
-            <p className="font-sans text-sm font-medium opacity-90 text-white">Begin a new focus session</p>
+            <p className="font-pen text-lg opacity-90 text-white">let's get things done</p>
           </div>
           <div className="w-[50px] h-[50px] bg-white/20 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:bg-white/30">
             <PlayIcon className="w-5 h-5 ml-[3px] text-white" />

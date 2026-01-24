@@ -30,9 +30,9 @@ const StartSession = ({
 }: StartSessionProps) => {
   const [showAddTag, setShowAddTag] = useState<boolean>(false)
   const [newTagName, setNewTagName] = useState<string>('')
-  const [newTagColor, setNewTagColor] = useState<string>('#F6AD55')
+  const [newTagColor, setNewTagColor] = useState<string>('#ef5f33')
 
-  const colors = ['#F6AD55', '#4FD1C5', '#4B6EF5', '#48BB78', '#FC8181', '#F687B3', '#9F7AEA']
+  const colors = ['#ef5f33', '#f1c40f', '#4FD1C5', '#48BB78', '#0466c8', '#F687B3', '#9F7AEA']
 
   const handleAddTag = () => {
     if (newTagName.trim()) {
@@ -50,8 +50,8 @@ const StartSession = ({
         <button className="close-btn" onClick={onClose}>
           <CloseIcon />
         </button>
-        <h2 className="font-sans text-xl font-bold">
-          <span className="italic font-normal">Start</span> working
+        <h2 className="font-serif text-xl font-bold">
+          <span className="font-pen font-normal">Start</span> working
         </h2>
         <div style={{ width: 40 }} />
       </header>
@@ -74,7 +74,7 @@ const StartSession = ({
 
         <div className="text-center my-6">
           <h3 className="text-lg font-semibold mb-1">{timerMode === 'stopwatch' ? 'Stopwatch timer' : 'Countdown timer'}</h3>
-          <p className="text-text-muted text-sm">{timerMode === 'stopwatch' ? 'Work until your task is done' : `Focus for ${countdownMinutes} minutes`}</p>
+          <p className="text-text-muted text-sm font-pen">{timerMode === 'stopwatch' ? 'work until done' : `focus for ${countdownMinutes} minutes`}</p>
         </div>
 
         {timerMode === 'countdown' && (
@@ -83,8 +83,8 @@ const StartSession = ({
               <button
                 key={mins}
                 className={cn(
-                  "py-2 px-4 rounded-full border-2 border-primary-blue-light bg-transparent text-sm text-text-dark cursor-pointer transition-all duration-200 animate-scaleIn hover:border-primary-blue active:scale-95",
-                  countdownMinutes === mins && "bg-primary-blue border-primary-blue text-white"
+                  "py-2 px-4 rounded-full border-2 border-cream-dark bg-transparent text-sm text-text-dark cursor-pointer transition-all duration-200 animate-scaleIn hover:border-primary active:scale-95",
+                  countdownMinutes === mins && "bg-primary border-primary text-white"
                 )}
                 style={{ animationDelay: `${0.05 + i * 0.05}s` }}
                 onClick={() => onSetCountdownMinutes(mins)}
@@ -96,12 +96,12 @@ const StartSession = ({
         )}
 
         <div className="mt-6 animate-slideUp" style={{ animationDelay: '0.1s' }}>
-          <h3 className="font-sans text-lg font-bold mb-1">Task goal</h3>
-          <p className="font-sans italic text-text-muted text-sm mb-4">Track how you spend your time</p>
+          <h3 className="font-serif text-lg font-bold mb-1">Task goal</h3>
+          <p className="font-pen text-text-muted text-base mb-4">track how you spend your time</p>
 
           <div className="flex flex-wrap gap-2">
             <button
-              className="inline-flex items-center gap-1.5 py-2.5 px-3.5 rounded-full text-sm font-medium bg-white border-2 border-dashed border-primary-blue-light cursor-pointer transition-all duration-200 hover:border-primary-blue"
+              className="inline-flex items-center gap-1.5 py-2.5 px-3.5 rounded-full text-sm font-medium bg-white border-2 border-dashed border-cream-dark cursor-pointer transition-all duration-200 hover:border-primary"
               onClick={() => setShowAddTag(true)}
             >
               <PlusIcon className="w-[18px] h-[18px] text-text-muted" />
@@ -110,7 +110,7 @@ const StartSession = ({
               <button
                 key={tag.id}
                 className={cn(
-                  "inline-flex items-center gap-1.5 py-2.5 px-4 rounded-full text-sm font-medium bg-primary-blue-light text-text-dark cursor-pointer transition-all duration-200 border-2 border-transparent",
+                  "inline-flex items-center gap-1.5 py-2.5 px-4 rounded-full text-sm font-medium bg-cream-dark text-text-dark cursor-pointer transition-all duration-200 border-2 border-transparent",
                   selectedTag?.id === tag.id ? "bg-white" : "hover:border-current"
                 )}
                 onClick={() => onSelectTag(tag)}
@@ -131,7 +131,7 @@ const StartSession = ({
               value={newTagName}
               onChange={(e: ChangeEvent<HTMLInputElement>) => setNewTagName(e.target.value)}
               autoFocus
-              className="w-full px-4 py-3 border-2 border-primary-blue-light rounded-sm text-sm outline-none mb-3 focus:border-primary-blue"
+              className="w-full px-4 py-3 border-2 border-cream-dark rounded-sm text-sm outline-none mb-3 focus:border-primary"
             />
             <div className="flex gap-2 mb-4">
               {colors.map(color => (
@@ -159,8 +159,8 @@ const StartSession = ({
 
         <button
           className={cn(
-            "w-20 h-20 rounded-full bg-white border-4 border-primary-blue flex items-center justify-center mx-auto mt-8 cursor-pointer transition-all duration-200 animate-bounceIn [&_svg]:w-8 [&_svg]:h-8 [&_svg]:text-primary-blue [&_svg]:ml-1",
-            selectedTag ? "hover:bg-primary-blue hover:scale-105 hover:[&_svg]:text-white active:scale-95" : "opacity-50 cursor-not-allowed border-text-muted [&_svg]:text-text-muted"
+            "w-20 h-20 rounded-full bg-white border-4 border-primary flex items-center justify-center mx-auto mt-8 cursor-pointer transition-all duration-200 animate-bounceIn [&_svg]:w-8 [&_svg]:h-8 [&_svg]:text-primary [&_svg]:ml-1",
+            selectedTag ? "hover:bg-primary hover:scale-105 hover:[&_svg]:text-white active:scale-95" : "opacity-50 cursor-not-allowed border-text-muted [&_svg]:text-text-muted"
           )}
           style={{ animationDelay: '0.3s' }}
           onClick={onStart}

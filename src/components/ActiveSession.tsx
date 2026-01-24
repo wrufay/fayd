@@ -85,7 +85,7 @@ const ActiveSession = ({ session, onUpdateSession, onEndSession, onDiscard }: Ac
       if (typeof chrome !== 'undefined' && chrome.storage) {
         chrome.storage.local.set({ activeSession: updatedSession })
       } else {
-        localStorage.setItem('flipd-activeSession', JSON.stringify(updatedSession))
+        localStorage.setItem('fayd-activeSession', JSON.stringify(updatedSession))
       }
     }
 
@@ -146,7 +146,7 @@ const ActiveSession = ({ session, onUpdateSession, onEndSession, onDiscard }: Ac
     if (typeof chrome !== 'undefined' && chrome.storage) {
       chrome.storage.local.remove('activeSession')
     } else {
-      localStorage.removeItem('flipd-activeSession')
+      localStorage.removeItem('fayd-activeSession')
     }
     if (onDiscard) {
       onDiscard()

@@ -42,7 +42,7 @@ interface FetchOptions extends RequestInit {
 }
 
 const authFetch = async <T,>(endpoint: string, options: FetchOptions = {}): Promise<T> => {
-  const token = localStorage.getItem('flipd-token')
+  const token = localStorage.getItem('fayd-token')
   const response = await fetch(`${API_URL}${endpoint}`, {
     ...options,
     headers: {
@@ -104,8 +104,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   useEffect(() => {
     // Check for stored token and user
-    const token = localStorage.getItem('flipd-token')
-    const storedUser = localStorage.getItem('flipd-user')
+    const token = localStorage.getItem('fayd-token')
+    const storedUser = localStorage.getItem('fayd-user')
 
     if (token && storedUser) {
       setUser(JSON.parse(storedUser))
@@ -116,8 +116,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const handleMessage = (event: MessageEvent<AuthMessage>) => {
       if (event.data.type === 'AUTH_SUCCESS' && event.data.token && event.data.user) {
         const { token, user } = event.data
-        localStorage.setItem('flipd-token', token)
-        localStorage.setItem('flipd-user', JSON.stringify(user))
+        localStorage.setItem('fayd-token', token)
+        localStorage.setItem('fayd-user', JSON.stringify(user))
         setUser(user)
       }
     }
@@ -153,15 +153,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }
 
   const logout = () => {
-    localStorage.removeItem('flipd-token')
-    localStorage.removeItem('flipd-user')
+    localStorage.removeItem('fayd-token')
+    localStorage.removeItem('fayd-user')
     setUser(null)
     setDataLoaded(false)
     setSessions([])
     setTags([])
   }
 
-  const getToken = () => localStorage.getItem('flipd-token')
+  const getToken = () => localStorage.getItem('fayd-token')
 
   // API methods for data sync
   const api: ApiMethods = {
