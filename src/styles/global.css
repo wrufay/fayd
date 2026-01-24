@@ -23,8 +23,15 @@
    BASE LAYER
    ============================================ */
 @layer base {
+  html, body {
+    @apply h-full overflow-hidden;
+    overscroll-behavior: none;
+    touch-action: manipulation;
+    -webkit-overflow-scrolling: auto;
+  }
+
   body {
-    @apply font-sans bg-cream text-text-dark min-w-[380px] w-full min-h-screen overflow-x-hidden;
+    @apply font-sans bg-cream text-text-dark min-w-[380px] w-full fixed inset-0;
   }
 
   /* Scrollbar styling */
@@ -44,7 +51,7 @@
    ============================================ */
 @layer components {
   .app {
-    @apply flex flex-col min-h-screen bg-cream relative max-w-[600px] mx-auto w-full;
+    @apply flex flex-col h-full bg-cream relative max-w-[600px] mx-auto w-full overflow-hidden px-4 sm:px-6;
   }
 }
 
