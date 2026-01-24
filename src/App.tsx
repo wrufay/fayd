@@ -26,7 +26,7 @@ const DEFAULT_TAGS: Tag[] = [
 ]
 
 function AppContent() {
-  const { user, sessions: cloudSessions, tags: cloudTags, api, dataLoaded, loading } = useAuth()
+  const { user, sessions: cloudSessions, tags: cloudTags, api, dataLoaded } = useAuth()
   const [view, setView] = useState<ViewType>(VIEWS.HOME)
   const [localTags, setLocalTags] = useState<Tag[]>(DEFAULT_TAGS)
   const [localSessions, setLocalSessions] = useState<Session[]>([])
@@ -34,9 +34,6 @@ function AppContent() {
   const [selectedTag, setSelectedTag] = useState<Tag | null>(null)
   const [timerMode, setTimerMode] = useState<'stopwatch' | 'countdown'>('stopwatch')
   const [countdownMinutes, setCountdownMinutes] = useState<number>(25)
-
-  // Show loading while auth is checking or cloud data is loading for logged-in user
-  const isLoadingData = loading || (user && !dataLoaded)
 
   // Use cloud data when logged in, local data otherwise
   const tags = user && dataLoaded ? cloudTags : localTags
@@ -268,16 +265,6 @@ function AppContent() {
       default:
         return null
     }
-  }
-
-  if (isLoadingData) {
-    return (
-      <div className="app">
-        <div className="p-5 flex items-center justify-center min-h-[200px]">
-          <p className="text-text-muted font-sans text-sm">Loading...</p>
-        </div>
-      </div>
-    )
   }
 
   return (
