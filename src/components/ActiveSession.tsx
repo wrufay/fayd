@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { TagIcon, StopwatchIcon, SettingsIcon, StopIcon, PauseIcon, PlayIcon, CoffeeIcon, CloseIcon } from './Icons'
 import { cn } from '../lib/utils'
+import { storage } from '../lib/platform'
 import type { Session } from '../types'
 
 const SaveIcon = () => (
@@ -81,12 +82,8 @@ const ActiveSession = ({ session, onUpdateSession, onEndSession, onDiscard }: Ac
         lastUpdateTime: Date.now(),
       }
 
-      // Save to chrome storage
-      if (typeof chrome !== 'undefined' && chrome.storage) {
-        chrome.storage.local.set({ activeSession: updatedSession })
-      } else {
-        localStorage.setItem('fayd-activeSession', JSON.stringify(updatedSession))
-      }
+      // Save to storage
+      storage.set({ activeSession: updatedSession })
     }
 
     // Save immediately and then every 2 seconds
@@ -143,11 +140,7 @@ const ActiveSession = ({ session, onUpdateSession, onEndSession, onDiscard }: Ac
   const handleDiscard = () => {
     setShowFinishModal(false)
     // Clear stored session
-    if (typeof chrome !== 'undefined' && chrome.storage) {
-      chrome.storage.local.remove('activeSession')
-    } else {
-      localStorage.removeItem('fayd-activeSession')
-    }
+    storage.remove('activeSession')
     if (onDiscard) {
       onDiscard()
     }

@@ -99,6 +99,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setDataLoaded(true)
     } catch (error) {
       console.error('Failed to load user data:', error)
+      // Still mark as loaded so app doesn't hang - user will see local/empty data
+      setDataLoaded(true)
     }
   }, [])
 

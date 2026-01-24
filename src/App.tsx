@@ -7,6 +7,7 @@ import ActiveSession from './components/ActiveSession'
 import SessionSummary from './components/SessionSummary'
 import Stats from './components/Stats'
 import Navigation from './components/Navigation'
+import { storage, sendMessage } from './lib/platform'
 import type { Tag, Session, ViewType } from './types'
 
 const VIEWS = {
@@ -25,7 +26,7 @@ const DEFAULT_TAGS: Tag[] = [
 ]
 
 function AppContent() {
-  const { user, sessions: cloudSessions, tags: cloudTags, api, dataLoaded } = useAuth()
+  const { user, sessions: cloudSessions, tags: cloudTags, api, dataLoaded, loading } = useAuth()
   const [view, setView] = useState<ViewType>(VIEWS.HOME)
   const [localTags, setLocalTags] = useState<Tag[]>(DEFAULT_TAGS)
   const [localSessions, setLocalSessions] = useState<Session[]>([])
@@ -34,52 +35,31 @@ function AppContent() {
   const [timerMode, setTimerMode] = useState<'stopwatch' | 'countdown'>('stopwatch')
   const [countdownMinutes, setCountdownMinutes] = useState<number>(25)
 
+  // Show loading while auth is checking or cloud data is loading for logged-in user
+  const isLoadingData = loading || (user && !dataLoaded)
+
   // Use cloud data when logged in, local data otherwise
   const tags = user && dataLoaded ? cloudTags : localTags
   const sessions = user && dataLoaded ? cloudSessions : localSessions
 
   // Load local data from storage on mount (for non-logged in users)
   useEffect(() => {
-    if (typeof chrome !== 'undefined' && chrome.storage) {
-      chrome.storage.local.get(['tags', 'sessions', 'activeSession'], (result) => {
-        if (result.tags) setLocalTags(result.tags)
-        if (result.sessions) setLocalSessions(result.sessions)
-        if (result.activeSession) {
-          setCurrentSession(result.activeSession)
-          setView(VIEWS.ACTIVE)
-        }
-      })
-    } else {
-      // Fallback to localStorage for development
-      const storedTags = localStorage.getItem('fayd-tags')
-      const storedSessions = localStorage.getItem('fayd-sessions')
-      const storedActiveSession = localStorage.getItem('fayd-activeSession')
-      if (storedTags) setLocalTags(JSON.parse(storedTags))
-      if (storedSessions) setLocalSessions(JSON.parse(storedSessions))
-      if (storedActiveSession) {
-        const activeSession = JSON.parse(storedActiveSession)
-        if (activeSession) {
-          setCurrentSession(activeSession)
-          setView(VIEWS.ACTIVE)
-        }
+    storage.get(['tags', 'sessions', 'activeSession']).then((result) => {
+      if (result.tags) setLocalTags(result.tags as Tag[])
+      if (result.sessions) setLocalSessions(result.sessions as Session[])
+      if (result.activeSession) {
+        setCurrentSession(result.activeSession as Session)
+        setView(VIEWS.ACTIVE)
       }
-    }
+    })
   }, [])
 
   // Save data to local storage (for non-logged in users)
   const saveToStorage = (key: string, value: unknown) => {
-    if (typeof chrome !== 'undefined' && chrome.storage) {
-      if (value === null) {
-        chrome.storage.local.remove(key)
-      } else {
-        chrome.storage.local.set({ [key]: value })
-      }
+    if (value === null) {
+      storage.remove(key)
     } else {
-      if (value === null) {
-        localStorage.removeItem(`fayd-${key}`)
-      } else {
-        localStorage.setItem(`fayd-${key}`, JSON.stringify(value))
-      }
+      storage.set({ [key]: value })
     }
   }
 
@@ -103,9 +83,7 @@ function AppContent() {
       setCurrentSession(session)
       saveToStorage('activeSession', session)
 
-      if (typeof chrome !== 'undefined' && chrome.runtime) {
-        chrome.runtime.sendMessage({ type: 'START_SESSION', session })
-      }
+      sendMessage({ type: 'START_SESSION', session })
 
       setView(VIEWS.ACTIVE)
     }, 3000)
@@ -132,9 +110,7 @@ function AppContent() {
     }
     saveToStorage('activeSession', null)
 
-    if (typeof chrome !== 'undefined' && chrome.runtime) {
-      chrome.runtime.sendMessage({ type: 'END_SESSION' })
-    }
+    sendMessage({ type: 'END_SESSION' })
 
     setCurrentSession(completedSession)
     setView(VIEWS.SUMMARY)
@@ -258,9 +234,7 @@ function AppContent() {
             onUpdateSession={setCurrentSession}
             onEndSession={endSession}
             onDiscard={() => {
-              if (typeof chrome !== 'undefined' && chrome.runtime) {
-                chrome.runtime.sendMessage({ type: 'END_SESSION' })
-              }
+              sendMessage({ type: 'END_SESSION' })
               setCurrentSession(null)
               setSelectedTag(null)
               setView(VIEWS.HOME)
@@ -294,6 +268,16 @@ function AppContent() {
       default:
         return null
     }
+  }
+
+  if (isLoadingData) {
+    return (
+      <div className="app">
+        <div className="p-5 flex items-center justify-center min-h-[200px]">
+          <p className="text-text-muted font-sans text-sm">Loading...</p>
+        </div>
+      </div>
+    )
   }
 
   return (
