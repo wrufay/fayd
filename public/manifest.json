@@ -1,11 +1,10 @@
 {
   "manifest_version": 3,
-  "name": "fayd - forget about your distractions.",
+  "name": "fayd",
   "version": "1.0.0",
-  "description": "Focus timer with time tracking and visualization",
+  "description": "Focus timer and productivity tool.",
   "permissions": ["storage", "alarms", "notifications", "sidePanel"],
   "action": {
-    "default_popup": "index.html",
     "default_icon": {
       "16": "icons/fayd_logo.png",
       "48": "icons/fayd_logo.png",

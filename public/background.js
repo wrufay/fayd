@@ -4,7 +4,7 @@
 chrome.runtime.onInstalled.addListener(() => {
   // Set side panel options - available on all URLs
   if (chrome.sidePanel) {
-    chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: false });
+    chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
   }
 });
 
