@@ -46,17 +46,17 @@ const StartSession = ({
 
   return (
     <div className="min-h-extension flex flex-col animate-fadeIn">
-      <header className="flex items-center justify-between px-5 py-4 animate-slideDown">
-        <button className="w-10 h-10 flex items-center justify-center bg-transparent border-none cursor-pointer text-text-muted transition-all duration-300 hover:text-text-dark hover:rotate-90 active:rotate-90 active:scale-90 [&_svg]:w-6 [&_svg]:h-6" onClick={onClose}>
+      <header className="flex items-center justify-between px-3 sm:px-5 py-3 sm:py-4 animate-slideDown">
+        <button className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-transparent border-none cursor-pointer text-text-muted transition-all duration-300 hover:text-text-dark hover:rotate-90 active:rotate-90 active:scale-90 [&_svg]:w-5 [&_svg]:h-5 sm:[&_svg]:w-6 sm:[&_svg]:h-6" onClick={onClose}>
           <CloseIcon />
         </button>
-        <h2 className="serif-bold text-xl">
+        <h2 className="serif-bold text-lg sm:text-xl">
           <span className="serif-regular italic">Start</span> working
         </h2>
-        <div style={{ width: 40 }} />
+        <div className="w-9 sm:w-10" />
       </header>
 
-      <div className="p-5 relative z-[1] animate-fadeIn">
+      <div className="p-3 sm:p-5 relative z-[1] animate-fadeIn">
         <div className="flex bg-cream-dark rounded-full p-1 w-fit mx-auto border border-border">
           <button
             className={cn("py-2.5 px-5 rounded-full border-none bg-transparent cursor-pointer flex items-center gap-2 coding-regular text-[13px] text-text-muted transition-all duration-300", timerMode === 'countdown' && "bg-white text-text-dark shadow-soft")}
@@ -72,13 +72,13 @@ const StartSession = ({
           </button>
         </div>
 
-        <div className="text-center my-6">
-          <h3 className="sans-bold text-lg mb-1">{timerMode === 'stopwatch' ? 'Stopwatch timer' : 'Countdown timer'}</h3>
+        <div className="text-center my-4 sm:my-6">
+          <h3 className="sans-bold text-base sm:text-lg mb-1">{timerMode === 'stopwatch' ? 'Stopwatch timer' : 'Countdown timer'}</h3>
           <p className="text-text-muted text-sm serif-regular italic">{timerMode === 'stopwatch' ? 'work until done' : `focus for ${countdownMinutes} minutes`}</p>
         </div>
 
         {timerMode === 'countdown' && (
-          <div className="flex flex-wrap gap-2 justify-center mb-6">
+          <div className="flex flex-wrap gap-2 justify-center mb-4 sm:mb-6">
             {countdownOptions.map((mins, i) => (
               <button
                 key={mins}
@@ -95,9 +95,9 @@ const StartSession = ({
           </div>
         )}
 
-        <div className="mt-6 animate-slideUp" style={{ animationDelay: '0.1s' }}>
-          <h3 className="serif-bold text-lg mb-1">Task goal</h3>
-          <p className="serif-regular italic text-text-muted text-base mb-4">track how you spend your time</p>
+        <div className="mt-4 sm:mt-6 animate-slideUp" style={{ animationDelay: '0.1s' }}>
+          <h3 className="serif-bold text-base sm:text-lg mb-1">Task goal</h3>
+          <p className="serif-regular italic text-text-muted text-sm sm:text-base mb-3 sm:mb-4">track how you spend your time</p>
 
           <div className="flex flex-wrap gap-2">
             <button
@@ -159,7 +159,7 @@ const StartSession = ({
 
         <button
           className={cn(
-            "w-20 h-20 rounded-full bg-white border-4 border-primary flex items-center justify-center mx-auto mt-8 cursor-pointer transition-all duration-200 animate-bounceIn [&_svg]:w-8 [&_svg]:h-8 [&_svg]:text-primary [&_svg]:ml-1",
+            "w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white border-4 border-primary flex items-center justify-center mx-auto mt-6 sm:mt-8 cursor-pointer transition-all duration-200 animate-bounceIn [&_svg]:w-6 [&_svg]:h-6 sm:[&_svg]:w-8 sm:[&_svg]:h-8 [&_svg]:text-primary [&_svg]:ml-1",
             selectedTag ? "hover:bg-primary hover:scale-105 hover:[&_svg]:text-white active:scale-95" : "opacity-50 cursor-not-allowed border-text-muted [&_svg]:text-text-muted"
           )}
           style={{ animationDelay: '0.3s' }}

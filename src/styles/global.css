@@ -24,14 +24,11 @@
    ============================================ */
 @layer base {
   html, body {
-    @apply h-full overflow-hidden;
-    overscroll-behavior: none;
-    touch-action: manipulation;
-    -webkit-overflow-scrolling: auto;
+    @apply h-full;
   }
 
   body {
-    @apply font-sans bg-cream text-text-dark min-w-[380px] w-full fixed inset-0;
+    @apply font-sans bg-cream text-text-dark w-full min-h-screen;
   }
 
   /* Scrollbar styling */
@@ -51,7 +48,7 @@
    ============================================ */
 @layer components {
   .app {
-    @apply flex flex-col h-full bg-cream relative max-w-[600px] mx-auto w-full overflow-hidden px-4 sm:px-6;
+    @apply flex flex-col min-h-screen bg-cream relative max-w-[600px] mx-auto w-full overflow-y-auto px-3 sm:px-4;
   }
 }
 

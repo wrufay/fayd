@@ -88,16 +88,16 @@ const Home = ({ sessions, tags, onStartSession }: HomeProps) => {
   }, [sessions])
 
   return (
-    <div className="p-5 relative z-[1] animate-fadeIn pb-20">
-      <header className="mb-6 animate-slideDown">
-        <p className="serif-regular text-base italic text-text-muted mb-1">{greeting}{user ? `, ${user.name.split(' ')[0]}` : ''},</p>
-        <h1 className="serif-regular text-xl text-text-dark">time to <span className="serif-bold">f</span>orget <span className="serif-bold">a</span>bout <span className="serif-bold">y</span>our <span className="serif-bold">d</span>istractions.</h1>
+    <div className="p-3 sm:p-5 relative z-[1] animate-fadeIn pb-20">
+      <header className="mb-4 sm:mb-6 animate-slideDown">
+        <p className="serif-regular text-sm sm:text-base italic text-text-muted mb-1">{greeting}{user ? `, ${user.name.split(' ')[0]}` : ''},</p>
+        <h1 className="serif-regular text-lg sm:text-xl text-text-dark">time to <span className="serif-bold">f</span>orget <span className="serif-bold">a</span>bout <span className="serif-bold">y</span>our <span className="serif-bold">d</span>istractions.</h1>
       </header>
 
 
       {/* front top container */}
-      <div className="bg-white rounded-lg p-5 shadow-md mb-4 transition-all duration-300 hover:shadow-card-hover bg-gradient-to-br from-white to-cream animate-slideUp">
-        <div className="flex items-center gap-4 mb-5">
+      <div className="bg-white rounded-lg p-3 sm:p-5 shadow-md mb-3 sm:mb-4 transition-all duration-300 hover:shadow-card-hover bg-gradient-to-br from-white to-cream animate-slideUp">
+        <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-5">
           <DonutChart
             data={[{ value: todayStats.focusMinutes, color: '#ef5f33' }]}
             size={80}
@@ -119,7 +119,7 @@ const Home = ({ sessions, tags, onStartSession }: HomeProps) => {
             <div
               key={i}
               className={cn(
-                "w-9 h-9 flex items-center justify-center rounded-full text-xs bg-cream animate-scaleIn transition-all duration-200",
+                "w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-full text-xs bg-cream animate-scaleIn transition-all duration-200",
                 day.completed ? "bg-primary text-white" : "text-text-muted",
                 day.isToday && !day.completed && "border-2 border-primary-light"
               )}
@@ -140,16 +140,16 @@ const Home = ({ sessions, tags, onStartSession }: HomeProps) => {
       </div>
 
       <button
-        className="bg-white rounded-md p-5 shadow-md mb-4 transition-all duration-300 !bg-primary-blue/70 !text-white border-none cursor-pointer text-left w-full hover:-translate-y-1 hover:scale-[1.02] hover:shadow-card-hover active:-translate-y-0.5 active:scale-[0.98] animate-slideUp"
+        className="bg-white rounded-md p-3 sm:p-5 shadow-md mb-3 sm:mb-4 transition-all duration-300 !bg-primary-blue/70 !text-white border-none cursor-pointer text-left w-full hover:-translate-y-1 hover:scale-[1.02] hover:shadow-card-hover active:-translate-y-0.5 active:scale-[0.98] animate-slideUp"
         style={{ animationDelay: '0.2s' }}
         onClick={onStartSession}
       >
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="sans-bold text-xl mb-1 text-white">Start focusing</h3>
-            <p className="serif-regular text-base italic opacity-90 text-white">let's get things done</p>
+            <h3 className="sans-bold text-lg sm:text-xl mb-1 text-white">Start focusing</h3>
+            <p className="serif-regular text-sm sm:text-base italic opacity-90 text-white">let's get things done</p>
           </div>
-          <div className="w-[50px] h-[50px] bg-white/20 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:bg-white/30">
+          <div className="w-10 h-10 sm:w-[50px] sm:h-[50px] bg-white/20 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:bg-white/30">
             <PlayIcon className="w-5 h-5 ml-[3px] text-white" />
           </div>
         </div>

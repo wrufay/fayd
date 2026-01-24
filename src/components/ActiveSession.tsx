@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { TagIcon, StopwatchIcon, SettingsIcon, StopIcon, PauseIcon, PlayIcon, CoffeeIcon, CloseIcon } from './Icons'
+import { TagIcon, StopwatchIcon, SettingsIcon, StopIcon, PauseIcon, PlayIcon, CloseIcon } from './Icons'
 import { cn } from '../lib/utils'
 import { storage } from '../lib/platform'
 import type { Session } from '../types'
@@ -27,29 +27,16 @@ interface FormattedTime {
 
 const ActiveSession = ({ session, onUpdateSession, onEndSession, onDiscard }: ActiveSessionProps) => {
   const [showFinishModal, setShowFinishModal] = useState<boolean>(false)
-  // Initialize from saved session state
   const [elapsed, setElapsed] = useState<number>(() => {
     if (!session) return 0
     let initialElapsed = session.focusTime || 0
-    // If timer was running (not paused, not on break), add time since last update
-    if (session.lastUpdateTime && !session.isPaused && !session.isOnBreak) {
+    if (session.lastUpdateTime && !session.isPaused) {
       const timeSinceUpdate = Date.now() - session.lastUpdateTime
       initialElapsed += timeSinceUpdate
     }
     return initialElapsed
   })
-  const [breakElapsed, setBreakElapsed] = useState<number>(() => {
-    if (!session) return 0
-    let initialBreak = session.breakTime || 0
-    // If on break and not paused, add time since last update
-    if (session.lastUpdateTime && !session.isPaused && session.isOnBreak) {
-      const timeSinceUpdate = Date.now() - session.lastUpdateTime
-      initialBreak += timeSinceUpdate
-    }
-    return initialBreak
-  })
   const [isPaused, setIsPaused] = useState<boolean>(session?.isPaused || false)
-  const [isOnBreak, setIsOnBreak] = useState<boolean>(session?.isOnBreak || false)
 
   // Timer tick
   useEffect(() => {
@@ -57,16 +44,12 @@ const ActiveSession = ({ session, onUpdateSession, onEndSession, onDiscard }: Ac
 
     const interval = setInterval(() => {
       if (!isPaused) {
-        if (isOnBreak) {
-          setBreakElapsed(prev => prev + 1000)
-        } else {
-          setElapsed(prev => prev + 1000)
-        }
+        setElapsed(prev => prev + 1000)
       }
     }, 1000)
 
     return () => clearInterval(interval)
-  }, [isPaused, isOnBreak, session])
+  }, [isPaused, session])
 
   // Save session state to storage periodically
   useEffect(() => {
@@ -76,22 +59,18 @@ const ActiveSession = ({ session, onUpdateSession, onEndSession, onDiscard }: Ac
       const updatedSession: Session = {
         ...session,
         focusTime: elapsed,
-        breakTime: breakElapsed,
         isPaused,
-        isOnBreak,
         lastUpdateTime: Date.now(),
       }
 
-      // Save to storage
       storage.set({ activeSession: updatedSession })
     }
 
-    // Save immediately and then every 2 seconds
     saveState()
     const saveInterval = setInterval(saveState, 2000)
 
     return () => clearInterval(saveInterval)
-  }, [session, elapsed, breakElapsed, isPaused, isOnBreak])
+  }, [session, elapsed, isPaused])
 
   const formatTime = useCallback((ms: number): FormattedTime => {
     const totalSeconds = Math.floor(ms / 1000)
@@ -106,20 +85,10 @@ const ActiveSession = ({ session, onUpdateSession, onEndSession, onDiscard }: Ac
     }
   }, [])
 
-  const time = formatTime(isOnBreak ? breakElapsed : elapsed)
+  const time = formatTime(elapsed)
 
   const handlePause = () => {
     setIsPaused(!isPaused)
-  }
-
-  const handleBreak = () => {
-    if (isOnBreak) {
-      // Resume focus
-      setIsOnBreak(false)
-    } else {
-      // Start break
-      setIsOnBreak(true)
-    }
   }
 
   const handleFinishClick = () => {
@@ -131,7 +100,6 @@ const ActiveSession = ({ session, onUpdateSession, onEndSession, onDiscard }: Ac
     const finalSession: Session = {
       ...session,
       focusTime: elapsed,
-      breakTime: breakElapsed,
     }
     setShowFinishModal(false)
     onEndSession(finalSession)
@@ -139,7 +107,6 @@ const ActiveSession = ({ session, onUpdateSession, onEndSession, onDiscard }: Ac
 
   const handleDiscard = () => {
     setShowFinishModal(false)
-    // Clear stored session
     storage.remove('activeSession')
     if (onDiscard) {
       onDiscard()
@@ -149,8 +116,8 @@ const ActiveSession = ({ session, onUpdateSession, onEndSession, onDiscard }: Ac
   if (!session) return null
 
   return (
-    <div className="min-h-extension flex flex-col p-5 animate-fadeIn">
-      <header className="flex items-center justify-between bg-primary-blue-light rounded-DEFAULT px-4 py-3 mb-10 animate-slideDown">
+    <div className="min-h-extension flex flex-col p-3 sm:p-5 animate-fadeIn">
+      <header className="flex items-center justify-between bg-primary-blue-light rounded-DEFAULT px-3 sm:px-4 py-2 sm:py-3 mb-6 sm:mb-10 animate-slideDown">
         <div className="flex items-center gap-2 sans-regular text-sm text-primary-blue">
           <TagIcon color={session.tag.color} className="w-[18px] h-[18px]" />
           <span>{session.tag.name}</span>
@@ -164,8 +131,8 @@ const ActiveSession = ({ session, onUpdateSession, onEndSession, onDiscard }: Ac
       </header>
 
       <div className="flex-1 flex flex-col items-center justify-center animate-scaleIn">
-        <p className="coding-bold text-sm tracking-[2px] text-text-muted mb-4">{isOnBreak ? 'ON BREAK' : 'FOCUSED'}</p>
-        <div className="coding-regular text-[56px] text-text-muted tracking-[2px] flex items-center">
+        <p className="coding-bold text-xs sm:text-sm tracking-[2px] text-text-muted mb-3 sm:mb-4">FOCUSED</p>
+        <div className="coding-regular text-4xl sm:text-[56px] text-text-muted tracking-[2px] flex items-center">
           <span>{time.hours}</span>
           <span className="mx-1">:</span>
           <span>{time.minutes}</span>
@@ -174,13 +141,13 @@ const ActiveSession = ({ session, onUpdateSession, onEndSession, onDiscard }: Ac
         </div>
       </div>
 
-      <div className="flex justify-center gap-6 my-10">
+      <div className="flex justify-center gap-6 sm:gap-8 my-6 sm:my-10">
         <button
           className="flex flex-col items-center gap-2 bg-transparent border-none cursor-pointer text-text-dark transition-all duration-200 animate-slideUp active:scale-95"
           style={{ animationDelay: '0.1s' }}
           onClick={handleFinishClick}
         >
-          <span className="p-4 rounded-full border-2 border-accent-green bg-accent-green/10 text-accent-green [&_svg]:w-7 [&_svg]:h-7 hover:bg-accent-green hover:text-white transition-all duration-200">
+          <span className="p-3 sm:p-4 rounded-full border-2 border-accent-green bg-accent-green/10 text-accent-green [&_svg]:w-6 [&_svg]:h-6 sm:[&_svg]:w-7 sm:[&_svg]:h-7 hover:bg-accent-green hover:text-white transition-all duration-200">
             <StopIcon />
           </span>
           <span className="coding-regular text-sm">Finish</span>
@@ -192,42 +159,13 @@ const ActiveSession = ({ session, onUpdateSession, onEndSession, onDiscard }: Ac
           onClick={handlePause}
         >
           <span className={cn(
-            "p-4 rounded-full border-2 border-accent-orange bg-accent-orange/10 text-accent-orange [&_svg]:w-7 [&_svg]:h-7 transition-all duration-200",
+            "p-3 sm:p-4 rounded-full border-2 border-accent-orange bg-accent-orange/10 text-accent-orange [&_svg]:w-6 [&_svg]:h-6 sm:[&_svg]:w-7 sm:[&_svg]:h-7 transition-all duration-200",
             isPaused ? "bg-accent-orange text-white" : "hover:bg-accent-orange hover:text-white"
           )}>
             {isPaused ? <PlayIcon /> : <PauseIcon />}
           </span>
           <span className="coding-regular text-sm">{isPaused ? 'Resume' : 'Pause'}</span>
         </button>
-
-        <button
-          className="flex flex-col items-center gap-2 bg-transparent border-none cursor-pointer text-text-dark transition-all duration-200 animate-slideUp active:scale-95"
-          style={{ animationDelay: '0.3s' }}
-          onClick={handleBreak}
-        >
-          <span className={cn(
-            "p-4 rounded-full border-2 border-primary-blue bg-primary-blue/10 text-primary-blue [&_svg]:w-7 [&_svg]:h-7 transition-all duration-200",
-            isOnBreak ? "bg-primary-blue text-white" : "hover:bg-primary-blue hover:text-white"
-          )}>
-            <CoffeeIcon />
-          </span>
-          <span className="coding-regular text-sm">{isOnBreak ? 'Focus' : 'Break'}</span>
-        </button>
-      </div>
-
-      <div className="p-5 bg-primary-blue-light rounded-DEFAULT animate-slideUp" style={{ animationDelay: '0.3s' }}>
-        <div className="flex justify-center gap-8">
-          <div className="flex flex-col items-center gap-1">
-            <span className="coding-bold text-lg text-text-dark">{formatTime(elapsed).minutes}:{formatTime(elapsed).seconds}</span>
-            <span className="coding-regular text-xs text-text-muted uppercase tracking-[1px]">focus</span>
-          </div>
-          {breakElapsed > 0 && (
-            <div className="flex flex-col items-center gap-1">
-              <span className="coding-bold text-lg text-text-dark">{formatTime(breakElapsed).minutes}:{formatTime(breakElapsed).seconds}</span>
-              <span className="coding-regular text-xs text-text-muted uppercase tracking-[1px]">break</span>
-            </div>
-          )}
-        </div>
       </div>
 
       {/* Save Progress Modal */}

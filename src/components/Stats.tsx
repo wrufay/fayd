@@ -164,8 +164,8 @@ const Stats = ({ sessions, tags, onDeleteSession, onDeleteTag, onUpdateTag, onAd
 
   return (
     <div className="pb-[120px] min-h-extension overflow-y-auto relative">
-      <header className="flex justify-between items-start p-5">
-        <h1 className="serif-bold text-[28px]">
+      <header className="flex justify-between items-start p-3 sm:p-5">
+        <h1 className="serif-bold text-xl sm:text-[28px]">
           <span className="serif-regular italic">your</span> stats
         </h1>
         {user ? (
@@ -186,7 +186,7 @@ const Stats = ({ sessions, tags, onDeleteSession, onDeleteTag, onUpdateTag, onAd
         )}
       </header>
 
-      <div className="p-5 relative z-[1] animate-fadeIn">
+      <div className="p-3 sm:p-5 relative z-[1] animate-fadeIn">
         <div className="flex justify-between items-center mb-4">
           <button
             className="flex items-center gap-2 py-2.5 px-3 bg-white border-2 border-primary-blue-light rounded-sm coding-regular text-sm text-text-dark cursor-pointer transition-all duration-200 hover:border-primary-blue hover:bg-primary-blue-light [&_svg]:w-5 [&_svg]:h-5"
@@ -240,17 +240,17 @@ const Stats = ({ sessions, tags, onDeleteSession, onDeleteTag, onUpdateTag, onAd
           </div>
         </div>
 
-        <div className="flex gap-2 mb-5">
+        <div className="flex gap-1 sm:gap-2 mb-4 sm:mb-5 overflow-x-auto">
           {([
             { key: 'today' as TimeRange, label: 'Today' },
-            { key: '7d' as TimeRange, label: 'Last 7d' },
-            { key: '4w' as TimeRange, label: 'Last 4w' },
-            { key: '12mo' as TimeRange, label: 'Last 12mo' },
+            { key: '7d' as TimeRange, label: '7d' },
+            { key: '4w' as TimeRange, label: '4w' },
+            { key: '12mo' as TimeRange, label: '12mo' },
           ]).map(tab => (
             <button
               key={tab.key}
               className={cn(
-                "py-2.5 px-4 rounded-sm border-none bg-transparent coding-regular text-sm text-text-muted cursor-pointer transition-all duration-200 hover:bg-primary-blue-light",
+                "py-2 sm:py-2.5 px-3 sm:px-4 rounded-sm border-none bg-transparent coding-regular text-xs sm:text-sm text-text-muted cursor-pointer transition-all duration-200 hover:bg-primary-blue-light whitespace-nowrap",
                 timeRange === tab.key && "text-gray-700"
               )}
               onClick={() => setTimeRange(tab.key)}
@@ -260,14 +260,14 @@ const Stats = ({ sessions, tags, onDeleteSession, onDeleteTag, onUpdateTag, onAd
           ))}
         </div>
 
-        <div className="bg-white rounded-lg p-5 shadow-card mb-4 transition-all duration-300 hover:shadow-card-hover text-center">
-          <h3 className="sans-bold text-lg mb-1">Task distribution</h3>
-          <p className="text-xs text-text-muted tracking-[1px] mb-5">{dateLabel}</p>
+        <div className="bg-white rounded-lg p-3 sm:p-5 shadow-card mb-3 sm:mb-4 transition-all duration-300 hover:shadow-card-hover text-center">
+          <h3 className="sans-bold text-base sm:text-lg mb-1">Task distribution</h3>
+          <p className="text-xs text-text-muted tracking-[1px] mb-4 sm:mb-5">{dateLabel}</p>
 
-          <div className="flex items-center justify-center gap-6 mb-5">
-            <DonutChart data={taskDistribution} size={120} strokeWidth={20} />
+          <div className="flex items-center justify-center gap-4 sm:gap-6 mb-4 sm:mb-5">
+            <DonutChart data={taskDistribution} size={100} strokeWidth={16} />
             <div className="text-left">
-              <p className="sans-bold text-lg text-text-dark mb-3">{formatDuration(totalTime)} total</p>
+              <p className="sans-bold text-base sm:text-lg text-text-dark mb-2 sm:mb-3">{formatDuration(totalTime)} total</p>
               <div className="flex flex-col gap-2">
                 {taskDistribution.map(item => (
                   <div key={item.id} className="flex items-center gap-2 text-sm text-text-dark">
@@ -288,10 +288,10 @@ const Stats = ({ sessions, tags, onDeleteSession, onDeleteTag, onUpdateTag, onAd
           </button>
         </div>
 
-        <div className="mt-6 mb-5">
-          <div className="flex justify-between items-center mb-4">
+        <div className="mt-4 sm:mt-6 mb-4 sm:mb-5">
+          <div className="flex justify-between items-center mb-3 sm:mb-4">
             <div className="flex flex-col gap-0.5">
-              <h3 className="sans-bold text-lg">Sessions {timeRange === 'today' ? 'today' : ''}</h3>
+              <h3 className="sans-bold text-base sm:text-lg">Sessions {timeRange === 'today' ? 'today' : ''}</h3>
               <span className="text-xs text-text-muted tracking-[1px]">{dateLabel}</span>
             </div>
             <button
