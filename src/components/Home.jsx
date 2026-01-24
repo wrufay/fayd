@@ -89,7 +89,7 @@ const Home = ({ sessions, tags, onStartSession }) => {
     <div className="container home">
       <header className="home-header">
         <div>
-          <p className="greeting">{greeting},</p>
+          <p className="greeting">{greeting}{user ? `, ${user.name.split(' ')[0]}` : ''}</p>
           <h1>Focus</h1>
         </div>
         {user ? (
