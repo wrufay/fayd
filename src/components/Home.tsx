@@ -100,8 +100,8 @@ const Home = ({ sessions, tags, onStartSession }: HomeProps) => {
     <div className="container pb-20">
       <header className="flex justify-between items-start mb-6 animate-slideDown">
         <div>
-          <p className="font-pen text-xl text-text-muted mb-1">{greeting}{user ? `, ${user.name.split(' ')[0]}` : ''}</p>
-          <h1 className="font-serif text-[28px] font-bold text-text-dark">Fayd</h1>
+          <p className="font-serif text-base italic text-text-muted mb-1">{greeting}{user ? `, ${user.name.split(' ')[0]}` : ''},</p>
+          <h1 className="font-serif text-[32px] font-bold text-text-dark">time to fayd.</h1>
         </div>
         {user ? (
           <button
@@ -172,7 +172,7 @@ const Home = ({ sessions, tags, onStartSession }: HomeProps) => {
         <div className="flex items-center justify-between">
           <div>
             <h3 className="font-sans text-xl font-bold mb-1 text-white">Start focusing</h3>
-            <p className="font-pen text-lg opacity-90 text-white">let's get things done</p>
+            <p className="font-serif text-base italic opacity-90 text-white">let's get things done</p>
           </div>
           <div className="w-[50px] h-[50px] bg-white/20 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:bg-white/30">
             <PlayIcon className="w-5 h-5 ml-[3px] text-white" />

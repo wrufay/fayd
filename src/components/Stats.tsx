@@ -122,7 +122,7 @@ const Stats = ({ sessions, tags, onDeleteSession, onDeleteTag, onAddTag, onAddSe
   return (
     <div className="pb-[120px] min-h-extension overflow-y-auto relative">
       <header className="p-5">
-        <h1 className="font-sans text-[28px] font-bold">
+        <h1 className="font-serif text-[28px] font-bold">
           <span className="font-normal italic">your</span> stats
         </h1>
       </header>

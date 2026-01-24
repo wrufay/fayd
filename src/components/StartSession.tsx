@@ -51,7 +51,7 @@ const StartSession = ({
           <CloseIcon />
         </button>
         <h2 className="font-serif text-xl font-bold">
-          <span className="font-pen font-normal">Start</span> working
+          <span className="italic font-normal">Start</span> working
         </h2>
         <div style={{ width: 40 }} />
       </header>
@@ -74,7 +74,7 @@ const StartSession = ({
 
         <div className="text-center my-6">
           <h3 className="text-lg font-semibold mb-1">{timerMode === 'stopwatch' ? 'Stopwatch timer' : 'Countdown timer'}</h3>
-          <p className="text-text-muted text-sm font-pen">{timerMode === 'stopwatch' ? 'work until done' : `focus for ${countdownMinutes} minutes`}</p>
+          <p className="text-text-muted text-sm font-serif italic">{timerMode === 'stopwatch' ? 'work until done' : `focus for ${countdownMinutes} minutes`}</p>
         </div>
 
         {timerMode === 'countdown' && (
@@ -97,7 +97,7 @@ const StartSession = ({
 
         <div className="mt-6 animate-slideUp" style={{ animationDelay: '0.1s' }}>
           <h3 className="font-serif text-lg font-bold mb-1">Task goal</h3>
-          <p className="font-pen text-text-muted text-base mb-4">track how you spend your time</p>
+          <p className="font-serif italic text-text-muted text-base mb-4">track how you spend your time</p>
 
           <div className="flex flex-wrap gap-2">
             <button

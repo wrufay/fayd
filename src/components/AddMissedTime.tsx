@@ -97,7 +97,7 @@ const AddMissedTime = ({
         </button>
         <div className="text-center">
           <h2 className="font-serif text-xl font-bold">
-            <span className="font-pen font-normal">Add</span> missed time
+            <span className="italic font-normal">Add</span> missed time
           </h2>
           <p className="font-sans text-xs text-text-muted mt-0.5">On {formatDate(selectedDate)}</p>
         </div>
@@ -107,7 +107,7 @@ const AddMissedTime = ({
       <div className="container pt-2">
         <div className="mt-0 animate-slideUp" style={{ animationDelay: '0.1s' }}>
           <h3 className="font-serif text-lg font-bold mb-1">Task goal</h3>
-          <p className="font-pen text-text-muted text-base mb-4">track how you spend your time</p>
+          <p className="font-serif italic text-text-muted text-base mb-4">track how you spend your time</p>
 
           <div className="flex flex-wrap gap-2">
             <button

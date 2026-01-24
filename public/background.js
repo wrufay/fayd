@@ -1,12 +1,21 @@
 // Background service worker for timer persistence
+
+// Enable side panel on install
+chrome.runtime.onInstalled.addListener(() => {
+  // Set side panel options - available on all URLs
+  if (chrome.sidePanel) {
+    chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: false });
+  }
+});
+
 chrome.alarms.onAlarm.addListener((alarm) => {
   if (alarm.name === 'focusTimer') {
     chrome.storage.local.get(['activeSession'], (result) => {
       if (result.activeSession) {
         chrome.notifications.create({
           type: 'basic',
-          iconUrl: 'icons/icon128.png',
-          title: 'Focus Session',
+          iconUrl: 'icons/fayd_logo.png',
+          title: 'Fayd',
           message: 'Your focus session timer is still running!'
         });
       }

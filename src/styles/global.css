@@ -16,7 +16,7 @@
   }
 
   body {
-    @apply font-sans bg-cream text-text-dark w-extension min-h-extension overflow-x-hidden;
+    @apply font-sans bg-cream text-text-dark min-w-[380px] w-full min-h-screen overflow-x-hidden;
   }
 
   /* Scrollbar styling (Chrome-specific) */
@@ -37,7 +37,7 @@
 @layer components {
   /* App container */
   .app {
-    @apply flex flex-col min-h-extension bg-cream relative;
+    @apply flex flex-col min-h-screen bg-cream relative;
   }
 
   /* Background decorations - warm, subtle gradients */
@@ -125,7 +125,7 @@
 
   /* Navigation */
   .nav {
-    @apply flex justify-around py-3 px-5 bg-white border-t border-cream-dark fixed bottom-0 left-0 right-0 w-extension z-[100];
+    @apply flex justify-around py-3 px-5 bg-white border-t border-cream-dark fixed bottom-0 left-0 right-0 w-full z-[100];
   }
 
   .nav-item {
