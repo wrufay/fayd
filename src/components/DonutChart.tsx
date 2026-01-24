@@ -1,6 +1,12 @@
-import React from 'react'
+import type { ChartDataItem } from '../types'
 
-const DonutChart = ({ data, size = 120, strokeWidth = 20 }) => {
+interface DonutChartProps {
+  data: ChartDataItem[]
+  size?: number
+  strokeWidth?: number
+}
+
+const DonutChart = ({ data, size = 120, strokeWidth = 20 }: DonutChartProps) => {
   const radius = (size - strokeWidth) / 2
   const circumference = 2 * Math.PI * radius
   const center = size / 2
@@ -24,26 +30,10 @@ const DonutChart = ({ data, size = 120, strokeWidth = 20 }) => {
   }
 
   // Create segments
-  let currentAngle = -90 // Start from top
-
   const segments = data.map((item, index) => {
     const percentage = item.value / total
-    const angle = percentage * 360
-    const startAngle = currentAngle
-    currentAngle += angle
 
-    // Calculate arc
-    const startRad = (startAngle * Math.PI) / 180
-    const endRad = ((startAngle + angle) * Math.PI) / 180
-
-    const x1 = center + radius * Math.cos(startRad)
-    const y1 = center + radius * Math.sin(startRad)
-    const x2 = center + radius * Math.cos(endRad)
-    const y2 = center + radius * Math.sin(endRad)
-
-    const largeArcFlag = angle > 180 ? 1 : 0
-
-    // For very small segments, just use a stroke
+    // For very small segments, just skip
     if (percentage < 0.01) return null
 
     // Use stroke-dasharray for smoother rendering

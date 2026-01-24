@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import Home from './components/Home'
 import StartSession from './components/StartSession'
@@ -7,6 +7,7 @@ import ActiveSession from './components/ActiveSession'
 import SessionSummary from './components/SessionSummary'
 import Stats from './components/Stats'
 import Navigation from './components/Navigation'
+import type { Tag, Session, ViewType } from './types'
 
 const VIEWS = {
   HOME: 'home',
@@ -15,9 +16,9 @@ const VIEWS = {
   ACTIVE: 'active',
   SUMMARY: 'summary',
   STATS: 'stats',
-}
+} as const
 
-const DEFAULT_TAGS = [
+const DEFAULT_TAGS: Tag[] = [
   { id: '1', name: 'projects', color: '#F6AD55' },
   { id: '2', name: 'study', color: '#4FD1C5' },
   { id: '3', name: 'work', color: '#4B6EF5' },
@@ -27,13 +28,13 @@ const DEFAULT_TAGS = [
 
 function AppContent() {
   const { user, sessions: cloudSessions, tags: cloudTags, api, dataLoaded } = useAuth()
-  const [view, setView] = useState(VIEWS.HOME)
-  const [localTags, setLocalTags] = useState(DEFAULT_TAGS)
-  const [localSessions, setLocalSessions] = useState([])
-  const [currentSession, setCurrentSession] = useState(null)
-  const [selectedTag, setSelectedTag] = useState(null)
-  const [timerMode, setTimerMode] = useState('stopwatch') // 'stopwatch' or 'countdown'
-  const [countdownMinutes, setCountdownMinutes] = useState(25)
+  const [view, setView] = useState<ViewType>(VIEWS.HOME)
+  const [localTags, setLocalTags] = useState<Tag[]>(DEFAULT_TAGS)
+  const [localSessions, setLocalSessions] = useState<Session[]>([])
+  const [currentSession, setCurrentSession] = useState<Session | null>(null)
+  const [selectedTag, setSelectedTag] = useState<Tag | null>(null)
+  const [timerMode, setTimerMode] = useState<'stopwatch' | 'countdown'>('stopwatch')
+  const [countdownMinutes, setCountdownMinutes] = useState<number>(25)
 
   // Use cloud data when logged in, local data otherwise
   const tags = user && dataLoaded ? cloudTags : localTags
@@ -54,17 +55,33 @@ function AppContent() {
       // Fallback to localStorage for development
       const storedTags = localStorage.getItem('flipd-tags')
       const storedSessions = localStorage.getItem('flipd-sessions')
+      const storedActiveSession = localStorage.getItem('flipd-activeSession')
       if (storedTags) setLocalTags(JSON.parse(storedTags))
       if (storedSessions) setLocalSessions(JSON.parse(storedSessions))
+      if (storedActiveSession) {
+        const activeSession = JSON.parse(storedActiveSession)
+        if (activeSession) {
+          setCurrentSession(activeSession)
+          setView(VIEWS.ACTIVE)
+        }
+      }
     }
   }, [])
 
   // Save data to local storage (for non-logged in users)
-  const saveToStorage = (key, value) => {
+  const saveToStorage = (key: string, value: unknown) => {
     if (typeof chrome !== 'undefined' && chrome.storage) {
-      chrome.storage.local.set({ [key]: value })
+      if (value === null) {
+        chrome.storage.local.remove(key)
+      } else {
+        chrome.storage.local.set({ [key]: value })
+      }
     } else {
-      localStorage.setItem(`flipd-${key}`, JSON.stringify(value))
+      if (value === null) {
+        localStorage.removeItem(`flipd-${key}`)
+      } else {
+        localStorage.setItem(`flipd-${key}`, JSON.stringify(value))
+      }
     }
   }
 
@@ -73,7 +90,7 @@ function AppContent() {
     setView(VIEWS.QUOTE)
 
     setTimeout(() => {
-      const session = {
+      const session: Session = {
         id: Date.now().toString(),
         tag: selectedTag,
         timerMode,
@@ -83,6 +100,7 @@ function AppContent() {
         breakTime: 0,
         isPaused: false,
         isOnBreak: false,
+        lastUpdateTime: Date.now(),
       }
       setCurrentSession(session)
       saveToStorage('activeSession', session)
@@ -95,8 +113,8 @@ function AppContent() {
     }, 3000)
   }
 
-  const endSession = async (finalSession) => {
-    const completedSession = {
+  const endSession = async (finalSession: Session) => {
+    const completedSession: Session = {
       ...finalSession,
       endTime: Date.now(),
     }
@@ -124,7 +142,7 @@ function AppContent() {
     setView(VIEWS.SUMMARY)
   }
 
-  const addTag = async (name, color) => {
+  const addTag = async (name: string, color: string) => {
     if (user && api) {
       try {
         await api.createTag(name, color)
@@ -132,14 +150,14 @@ function AppContent() {
         console.error('Failed to save tag to cloud:', error)
       }
     } else {
-      const newTag = { id: Date.now().toString(), name, color }
+      const newTag: Tag = { id: Date.now().toString(), name, color }
       const updatedTags = [...localTags, newTag]
       setLocalTags(updatedTags)
       saveToStorage('tags', updatedTags)
     }
   }
 
-  const deleteSession = async (sessionId) => {
+  const deleteSession = async (sessionId: string) => {
     if (user && api) {
       try {
         await api.deleteSession(sessionId)
@@ -153,7 +171,7 @@ function AppContent() {
     }
   }
 
-  const deleteTag = async (tagId) => {
+  const deleteTag = async (tagId: string) => {
     if (user && api) {
       try {
         await api.deleteTag(tagId)
@@ -167,7 +185,21 @@ function AppContent() {
     }
   }
 
-  const handleNavigation = (navView) => {
+  const addSession = async (session: Session) => {
+    if (user && api) {
+      try {
+        await api.createSession(session)
+      } catch (error) {
+        console.error('Failed to save session to cloud:', error)
+      }
+    } else {
+      const updatedSessions = [session, ...localSessions]
+      setLocalSessions(updatedSessions)
+      saveToStorage('sessions', updatedSessions)
+    }
+  }
+
+  const handleNavigation = (navView: ViewType) => {
     if (view === VIEWS.ACTIVE) return // Don't navigate away from active session
     setView(navView)
   }
@@ -205,6 +237,14 @@ function AppContent() {
             session={currentSession}
             onUpdateSession={setCurrentSession}
             onEndSession={endSession}
+            onDiscard={() => {
+              if (typeof chrome !== 'undefined' && chrome.runtime) {
+                chrome.runtime.sendMessage({ type: 'END_SESSION' })
+              }
+              setCurrentSession(null)
+              setSelectedTag(null)
+              setView(VIEWS.HOME)
+            }}
           />
         )
       case VIEWS.SUMMARY:
@@ -227,7 +267,7 @@ function AppContent() {
             onDeleteSession={deleteSession}
             onDeleteTag={deleteTag}
             onAddTag={addTag}
-            onStartSession={() => setView(VIEWS.START_SESSION)}
+            onAddSession={addSession}
           />
         )
       default:

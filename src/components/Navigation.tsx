@@ -1,18 +1,24 @@
-import React from 'react'
 import { HomeIcon, StatsIcon } from './Icons'
+import { cn } from '../lib/utils'
+import type { ViewType } from '../types'
 
-const Navigation = ({ activeView, onNavigate }) => {
+interface NavigationProps {
+  activeView: ViewType
+  onNavigate: (view: ViewType) => void
+}
+
+const Navigation = ({ activeView, onNavigate }: NavigationProps) => {
   return (
     <nav className="nav">
       <button
-        className={`nav-item ${activeView === 'home' ? 'active' : ''}`}
+        className={cn("nav-item", activeView === 'home' && "active")}
         onClick={() => onNavigate('home')}
       >
         <HomeIcon />
         <span>home</span>
       </button>
       <button
-        className={`nav-item ${activeView === 'stats' ? 'active' : ''}`}
+        className={cn("nav-item", activeView === 'stats' && "active")}
         onClick={() => onNavigate('stats')}
       >
         <StatsIcon />

@@ -1,8 +1,9 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import DonutChart from './DonutChart'
 import { PlayIcon, FireIcon } from './Icons'
 import { useAuth } from '../context/AuthContext'
-import './Home.css'
+import { cn } from '../lib/utils'
+import type { Session, Tag } from '../types'
 
 const GoogleIcon = () => (
   <svg viewBox="0 0 24 24" width="18" height="18">
@@ -13,7 +14,19 @@ const GoogleIcon = () => (
   </svg>
 )
 
-const Home = ({ sessions, tags, onStartSession }) => {
+interface HomeProps {
+  sessions: Session[]
+  tags: Tag[]
+  onStartSession: () => void
+}
+
+interface WeekDay {
+  label: string
+  completed: boolean
+  isToday: boolean
+}
+
+const Home = ({ sessions, tags, onStartSession }: HomeProps) => {
   const { user, login, logout } = useAuth()
   const today = new Date()
   const greeting = useMemo(() => {
@@ -61,9 +74,9 @@ const Home = ({ sessions, tags, onStartSession }) => {
   }, [sessions])
 
   // Week days
-  const weekDays = useMemo(() => {
+  const weekDays: WeekDay[] = useMemo(() => {
     const days = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
-    const result = []
+    const result: WeekDay[] = []
     const todayIdx = today.getDay()
     const dayMs = 24 * 60 * 60 * 1000
 
@@ -83,51 +96,63 @@ const Home = ({ sessions, tags, onStartSession }) => {
     return result
   }, [sessions])
 
-  const dailyGoal = 180 // 3 hours in minutes
-
   return (
-    <div className="container home">
-      <header className="home-header">
+    <div className="container pb-20">
+      <header className="flex justify-between items-start mb-6 animate-slideDown">
         <div>
-          <p className="greeting">{greeting}{user ? `, ${user.name.split(' ')[0]}` : ''}</p>
-          <h1>Focus</h1>
+          <p className="font-sans text-base text-text-muted italic font-normal mb-1">{greeting}{user ? `, ${user.name.split(' ')[0]}` : ''}</p>
+          <h1 className="font-sans text-[32px] font-bold">Focus</h1>
         </div>
         {user ? (
-          <button className="profile-btn" onClick={logout} title="Sign out">
-            <img src={user.avatar} alt={user.name} className="profile-avatar" />
+          <button
+            className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-[20px] font-sans text-[13px] font-medium text-text-dark cursor-pointer transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-px active:translate-y-0 active:scale-[0.98]"
+            onClick={logout}
+          >
+            <span>Log out</span>
           </button>
         ) : (
-          <button className="google-signin-btn" onClick={login}>
+          <button
+            className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-[20px] font-sans text-[13px] font-medium text-text-dark cursor-pointer transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-px active:translate-y-0 active:scale-[0.98]"
+            onClick={login}
+          >
             <GoogleIcon />
             <span>Sign in</span>
           </button>
         )}
       </header>
 
-      <div className="card progress-card">
-        <div className="progress-content">
+      <div className="card bg-gradient-to-br from-white to-[#F5F7FF] animate-slideUp">
+        <div className="flex items-center gap-4 mb-5">
           <DonutChart
             data={[{ value: todayStats.focusMinutes, color: '#4B6EF5' }]}
             size={80}
             strokeWidth={12}
           />
-          <div className="progress-info">
-            <p className="progress-label">today</p>
-            <p className="progress-time">
-              <strong>{todayStats.focusMinutes}m</strong>/{dailyGoal / 60}h
+          <div className="flex-1">
+            <p className="text-sm text-text-muted mb-1">today</p>
+            <p className="text-xl text-text-dark">
+              <strong className="font-semibold">{todayStats.focusMinutes}m</strong>
             </p>
           </div>
-          <div className="streak-badge">
+          <div className="flex items-center gap-1 bg-primary-blue-light px-3 py-2 rounded-full text-sm font-semibold text-text-dark animate-scaleIn" style={{ animationDelay: '0.3s' }}>
             <span>{streak}d</span>
-            <FireIcon className="fire-icon" />
+            <FireIcon className="w-4 h-4 text-accent-orange animate-pulse" />
           </div>
         </div>
-        <div className="week-view">
+        <div className="flex justify-between gap-2">
           {weekDays.map((day, i) => (
-            <div key={i} className={`week-day ${day.completed ? 'completed' : ''} ${day.isToday ? 'today' : ''}`}>
+            <div
+              key={i}
+              className={cn(
+                "w-9 h-9 flex items-center justify-center rounded-full text-xs bg-background animate-scaleIn transition-all duration-200",
+                day.completed ? "bg-primary-blue text-white" : "text-text-muted",
+                day.isToday && !day.completed && "border-2 border-primary-blue-light"
+              )}
+              style={{ animationDelay: `${0.1 + i * 0.05}s` }}
+            >
               {day.completed ? (
-                <div className="check-circle">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
+                <div className="w-5 h-5">
+                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
                     <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
                   </svg>
                 </div>
@@ -139,14 +164,18 @@ const Home = ({ sessions, tags, onStartSession }) => {
         </div>
       </div>
 
-      <button className="start-card card" onClick={onStartSession}>
-        <div className="start-card-content">
-          <div className="start-card-text">
-            <h3>Start focusing</h3>
-            <p>Begin a new focus session</p>
+      <button
+        className="card !bg-gradient-to-br from-primary-blue to-[#6B8DF7] !text-white border-none cursor-pointer text-left w-full transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:shadow-[0_12px_32px_rgba(75,110,245,0.4)] active:-translate-y-0.5 active:scale-[0.98] animate-slideUp"
+        style={{ animationDelay: '0.2s' }}
+        onClick={onStartSession}
+      >
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="font-sans text-xl font-bold mb-1 text-white">Start focusing</h3>
+            <p className="font-sans text-sm font-medium opacity-90 text-white">Begin a new focus session</p>
           </div>
-          <div className="play-button">
-            <PlayIcon />
+          <div className="w-[50px] h-[50px] bg-white/20 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:bg-white/30">
+            <PlayIcon className="w-5 h-5 ml-[3px] text-white" />
           </div>
         </div>
       </button>

@@ -1,12 +1,47 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react'
 import { API_URL } from '../config/api'
+import type { User, Tag, Session, AuthContextType, ApiMethods } from '../types'
 
-const AuthContext = createContext(null)
+// Backend response types
+interface BackendTag {
+  _id: string
+  name: string
+  color: string
+}
 
-export const useAuth = () => useContext(AuthContext)
+interface BackendSession {
+  _id: string
+  tag: BackendTag | null
+  timerMode: 'stopwatch' | 'countdown'
+  countdownMinutes: number | null
+  startTime: string
+  endTime: string | null
+  focusTime: number
+  breakTime: number
+}
+
+interface AuthMessage {
+  type: string
+  token?: string
+  user?: User
+}
+
+const AuthContext = createContext<AuthContextType | null>(null)
+
+export const useAuth = (): AuthContextType => {
+  const context = useContext(AuthContext)
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider')
+  }
+  return context
+}
 
 // Helper for API calls with auth
-const authFetch = async (endpoint, options = {}) => {
+interface FetchOptions extends RequestInit {
+  headers?: Record<string, string>
+}
+
+const authFetch = async <T,>(endpoint: string, options: FetchOptions = {}): Promise<T> => {
   const token = localStorage.getItem('flipd-token')
   const response = await fetch(`${API_URL}${endpoint}`, {
     ...options,
@@ -22,31 +57,35 @@ const authFetch = async (endpoint, options = {}) => {
   return response.json()
 }
 
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null)
+interface AuthProviderProps {
+  children: ReactNode
+}
+
+export const AuthProvider = ({ children }: AuthProviderProps) => {
+  const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
-  const [sessions, setSessions] = useState([])
-  const [tags, setTags] = useState([])
+  const [sessions, setSessions] = useState<Session[]>([])
+  const [tags, setTags] = useState<Tag[]>([])
   const [dataLoaded, setDataLoaded] = useState(false)
 
   // Load data from backend when logged in
   const loadUserData = useCallback(async () => {
     try {
       const [tagsData, sessionsData] = await Promise.all([
-        authFetch('/api/tags'),
-        authFetch('/api/sessions'),
+        authFetch<BackendTag[]>('/api/tags'),
+        authFetch<BackendSession[]>('/api/sessions'),
       ])
 
       // Transform backend data to match frontend format
-      const formattedTags = tagsData.map(t => ({
+      const formattedTags: Tag[] = tagsData.map(t => ({
         id: t._id,
         name: t.name,
         color: t.color,
       }))
 
-      const formattedSessions = sessionsData.map(s => ({
+      const formattedSessions: Session[] = sessionsData.map(s => ({
         id: s._id,
-        tag: s.tag ? { id: s.tag._id, name: s.tag.name, color: s.tag.color } : null,
+        tag: s.tag ? { id: s.tag._id, name: s.tag.name, color: s.tag.color } : { id: '', name: '', color: '' },
         timerMode: s.timerMode,
         countdownMinutes: s.countdownMinutes,
         startTime: new Date(s.startTime).getTime(),
@@ -74,8 +113,8 @@ export const AuthProvider = ({ children }) => {
     setLoading(false)
 
     // Listen for auth callback messages
-    const handleMessage = (event) => {
-      if (event.data.type === 'AUTH_SUCCESS') {
+    const handleMessage = (event: MessageEvent<AuthMessage>) => {
+      if (event.data.type === 'AUTH_SUCCESS' && event.data.token && event.data.user) {
         const { token, user } = event.data
         localStorage.setItem('flipd-token', token)
         localStorage.setItem('flipd-user', JSON.stringify(user))
@@ -125,40 +164,40 @@ export const AuthProvider = ({ children }) => {
   const getToken = () => localStorage.getItem('flipd-token')
 
   // API methods for data sync
-  const api = {
+  const api: ApiMethods = {
     // Tags
-    createTag: async (name, color) => {
-      const tag = await authFetch('/api/tags', {
+    createTag: async (name: string, color: string) => {
+      const tag = await authFetch<BackendTag>('/api/tags', {
         method: 'POST',
         body: JSON.stringify({ name, color }),
       })
-      const formatted = { id: tag._id, name: tag.name, color: tag.color }
+      const formatted: Tag = { id: tag._id, name: tag.name, color: tag.color }
       setTags(prev => [...prev, formatted])
       return formatted
     },
 
-    deleteTag: async (tagId) => {
+    deleteTag: async (tagId: string) => {
       await authFetch(`/api/tags/${tagId}`, { method: 'DELETE' })
       setTags(prev => prev.filter(t => t.id !== tagId))
     },
 
     // Sessions
-    createSession: async (sessionData) => {
-      const session = await authFetch('/api/sessions', {
+    createSession: async (sessionData: Partial<Session>) => {
+      const session = await authFetch<BackendSession>('/api/sessions', {
         method: 'POST',
         body: JSON.stringify({
-          tag: sessionData.tag.id,
+          tag: sessionData.tag?.id,
           timerMode: sessionData.timerMode,
           countdownMinutes: sessionData.countdownMinutes,
-          startTime: new Date(sessionData.startTime),
+          startTime: sessionData.startTime ? new Date(sessionData.startTime) : null,
           endTime: sessionData.endTime ? new Date(sessionData.endTime) : null,
           focusTime: sessionData.focusTime,
           breakTime: sessionData.breakTime,
         }),
       })
-      const formatted = {
+      const formatted: Session = {
         id: session._id,
-        tag: session.tag ? { id: session.tag._id, name: session.tag.name, color: session.tag.color } : null,
+        tag: session.tag ? { id: session.tag._id, name: session.tag.name, color: session.tag.color } : { id: '', name: '', color: '' },
         timerMode: session.timerMode,
         countdownMinutes: session.countdownMinutes,
         startTime: new Date(session.startTime).getTime(),
@@ -170,7 +209,7 @@ export const AuthProvider = ({ children }) => {
       return formatted
     },
 
-    deleteSession: async (sessionId) => {
+    deleteSession: async (sessionId: string) => {
       await authFetch(`/api/sessions/${sessionId}`, { method: 'DELETE' })
       setSessions(prev => prev.filter(s => s.id !== sessionId))
     },
