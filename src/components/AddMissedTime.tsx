@@ -208,7 +208,7 @@ const AddMissedTime = ({
 
         <button
           className={cn(
-            "inline-flex items-center justify-center gap-2 py-3 px-6 rounded-full coding-regular text-sm border-[1.5px] cursor-pointer transition-all duration-300 bg-crimson border-crimson text-white hover:bg-primary-dark hover:border-primary-dark hover:-translate-y-px hover:shadow-button active:translate-y-0 mt-8 w-full py-4 text-base animate-slideUp",
+            "inline-flex items-center justify-center gap-2 py-3 px-6 rounded-full coding-regular text-sm border-[1.5px] cursor-pointer transition-all duration-300 bg-crimson/80 border-crimson text-white hover:bg-primary-dark hover:border-primary-dark hover:-translate-y-px hover:shadow-button active:translate-y-0 mt-8 w-full py-4 text-base animate-slideUp",
             !canSave && "opacity-50 cursor-not-allowed"
           )}
           style={{ animationDelay: '0.3s' }}

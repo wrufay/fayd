@@ -251,7 +251,7 @@ const Stats = ({ sessions, tags, onDeleteSession, onDeleteTag, onUpdateTag, onAd
               key={tab.key}
               className={cn(
                 "py-2.5 px-4 rounded-sm border-none bg-transparent coding-regular text-sm text-text-muted cursor-pointer transition-all duration-200 hover:bg-primary-blue-light",
-                timeRange === tab.key && "text-gray-800"
+                timeRange === tab.key && "text-gray-700"
               )}
               onClick={() => setTimeRange(tab.key)}
             >

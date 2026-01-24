@@ -83,8 +83,8 @@ const StartSession = ({
               <button
                 key={mins}
                 className={cn(
-                  "py-2 px-4 rounded-full border-2 border-cream-dark bg-transparent text-sm text-text-dark cursor-pointer transition-all duration-200 animate-scaleIn hover:border-primary active:scale-95",
-                  countdownMinutes === mins && "bg-primary border-primary text-white"
+                  "py-2 px-4 rounded-full border-2 border-cream-dark bg-transparent text-sm text-text-dark cursor-pointer transition-all duration-200 animate-scaleIn hover:border-yellow active:scale-95",
+                  countdownMinutes === mins && "bg-primary border-yellow"
                 )}
                 style={{ animationDelay: `${0.05 + i * 0.05}s` }}
                 onClick={() => onSetCountdownMinutes(mins)}
@@ -124,7 +124,7 @@ const StartSession = ({
         </div>
 
         {showAddTag && (
-          <div className="bg-white rounded-DEFAULT p-5 shadow-card mb-4 transition-all duration-300 hover:shadow-card-hover mt-4 animate-slideUp">
+          <div className="bg-white rounded-lg p-5 shadow-card mb-4 transition-all duration-300 hover:shadow-card-hover mt-4 animate-slideUp">
             <input
               type="text"
               placeholder="Tag name"
