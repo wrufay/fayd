@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import DonutChart from './DonutChart'
-import { PlayIcon, FireIcon } from './Icons'
+import { PlayIcon } from './Icons'
 import { useAuth } from '../context/AuthContext'
 import { cn } from '../lib/utils'
 import type { Session, Tag } from '../types'
@@ -37,31 +37,6 @@ const Home = ({ sessions, tags, onStartSession }: HomeProps) => {
       focusMinutes: Math.floor(totalFocus / 60000),
       sessionCount: todaySessions.length,
     }
-  }, [sessions])
-
-  // Calculate streak
-  const streak = useMemo(() => {
-    let count = 0
-    const dayMs = 24 * 60 * 60 * 1000
-    let checkDate = new Date()
-    checkDate.setHours(0, 0, 0, 0)
-
-    for (let i = 0; i < 365; i++) {
-      const dayStart = checkDate.getTime()
-      const dayEnd = dayStart + dayMs
-      const hasSession = sessions.some(s => s.startTime >= dayStart && s.startTime < dayEnd)
-
-      if (hasSession) {
-        count++
-        checkDate = new Date(checkDate.getTime() - dayMs)
-      } else if (i === 0) {
-        // Today hasn't had a session yet, that's okay
-        checkDate = new Date(checkDate.getTime() - dayMs)
-      } else {
-        break
-      }
-    }
-    return count
   }, [sessions])
 
   // Week days
@@ -108,10 +83,6 @@ const Home = ({ sessions, tags, onStartSession }: HomeProps) => {
             <p className="text-xl text-text-dark">
               <strong className="sans-bold">{todayStats.focusMinutes}m</strong>
             </p>
-          </div>
-          <div className="flex items-center gap-1 bg-accent-yellow-light px-3 py-2 rounded-full sans-bold text-sm text-text-dark animate-scaleIn" style={{ animationDelay: '0.3s' }}>
-            <span>{streak}d</span>
-            <FireIcon className="w-4 h-4 text-accent-yellow animate-pulse" />
           </div>
         </div>
         <div className="flex justify-between gap-2">

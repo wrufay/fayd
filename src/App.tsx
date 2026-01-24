@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { HashRouter, Routes, Route, useNavigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import Home from './components/Home'
 import StartSession from './components/StartSession'
@@ -8,16 +9,17 @@ import SessionSummary from './components/SessionSummary'
 import Stats from './components/Stats'
 import Navigation from './components/Navigation'
 import { storage, sendMessage } from './lib/platform'
-import type { Tag, Session, ViewType } from './types'
+import type { Tag, Session } from './types'
 
-const VIEWS = {
-  HOME: 'home',
+const OVERLAY_VIEWS = {
+  NONE: 'none',
   START_SESSION: 'startSession',
   QUOTE: 'quote',
   ACTIVE: 'active',
   SUMMARY: 'summary',
-  STATS: 'stats',
 } as const
+
+type OverlayView = typeof OVERLAY_VIEWS[keyof typeof OVERLAY_VIEWS]
 
 const DEFAULT_TAGS: Tag[] = [
   { id: '1', name: 'projects', color: '#ef5f33' },
@@ -27,7 +29,8 @@ const DEFAULT_TAGS: Tag[] = [
 
 function AppContent() {
   const { user, sessions: cloudSessions, tags: cloudTags, api, dataLoaded } = useAuth()
-  const [view, setView] = useState<ViewType>(VIEWS.HOME)
+  const navigate = useNavigate()
+  const [overlayView, setOverlayView] = useState<OverlayView>(OVERLAY_VIEWS.NONE)
   const [localTags, setLocalTags] = useState<Tag[]>(DEFAULT_TAGS)
   const [localSessions, setLocalSessions] = useState<Session[]>([])
   const [currentSession, setCurrentSession] = useState<Session | null>(null)
@@ -46,7 +49,7 @@ function AppContent() {
       if (result.sessions) setLocalSessions(result.sessions as Session[])
       if (result.activeSession) {
         setCurrentSession(result.activeSession as Session)
-        setView(VIEWS.ACTIVE)
+        setOverlayView(OVERLAY_VIEWS.ACTIVE)
       }
     })
   }, [])
@@ -62,7 +65,7 @@ function AppContent() {
 
   const startSession = () => {
     if (!selectedTag) return
-    setView(VIEWS.QUOTE)
+    setOverlayView(OVERLAY_VIEWS.QUOTE)
 
     setTimeout(() => {
       const session: Session = {
@@ -82,7 +85,7 @@ function AppContent() {
 
       sendMessage({ type: 'START_SESSION', session })
 
-      setView(VIEWS.ACTIVE)
+      setOverlayView(OVERLAY_VIEWS.ACTIVE)
     }, 3000)
   }
 
@@ -110,7 +113,7 @@ function AppContent() {
     sendMessage({ type: 'END_SESSION' })
 
     setCurrentSession(completedSession)
-    setView(VIEWS.SUMMARY)
+    setOverlayView(OVERLAY_VIEWS.SUMMARY)
   }
 
   const addTag = async (name: string, color: string) => {
@@ -192,22 +195,9 @@ function AppContent() {
     }
   }
 
-  const handleNavigation = (navView: ViewType) => {
-    if (view === VIEWS.ACTIVE) return // Don't navigate away from active session
-    setView(navView)
-  }
-
-  const renderView = () => {
-    switch (view) {
-      case VIEWS.HOME:
-        return (
-          <Home
-            sessions={sessions}
-            tags={tags}
-            onStartSession={() => setView(VIEWS.START_SESSION)}
-          />
-        )
-      case VIEWS.START_SESSION:
+  const renderOverlay = () => {
+    switch (overlayView) {
+      case OVERLAY_VIEWS.START_SESSION:
         return (
           <StartSession
             tags={tags}
@@ -218,13 +208,13 @@ function AppContent() {
             countdownMinutes={countdownMinutes}
             onSetCountdownMinutes={setCountdownMinutes}
             onStart={startSession}
-            onClose={() => setView(VIEWS.HOME)}
+            onClose={() => setOverlayView(OVERLAY_VIEWS.NONE)}
             onAddTag={addTag}
           />
         )
-      case VIEWS.QUOTE:
+      case OVERLAY_VIEWS.QUOTE:
         return <QuoteScreen tag={selectedTag} timerMode={timerMode} />
-      case VIEWS.ACTIVE:
+      case OVERLAY_VIEWS.ACTIVE:
         return (
           <ActiveSession
             session={currentSession}
@@ -234,32 +224,23 @@ function AppContent() {
               sendMessage({ type: 'END_SESSION' })
               setCurrentSession(null)
               setSelectedTag(null)
-              setView(VIEWS.HOME)
+              setOverlayView(OVERLAY_VIEWS.NONE)
             }}
           />
         )
-      case VIEWS.SUMMARY:
+      case OVERLAY_VIEWS.SUMMARY:
         return (
           <SessionSummary
             session={currentSession}
             onClose={() => {
               setCurrentSession(null)
               setSelectedTag(null)
-              setView(VIEWS.HOME)
+              setOverlayView(OVERLAY_VIEWS.NONE)
             }}
-            onViewStats={() => setView(VIEWS.STATS)}
-          />
-        )
-      case VIEWS.STATS:
-        return (
-          <Stats
-            sessions={sessions}
-            tags={tags}
-            onDeleteSession={deleteSession}
-            onDeleteTag={deleteTag}
-            onUpdateTag={updateTag}
-            onAddTag={addTag}
-            onAddSession={addSession}
+            onViewStats={() => {
+              setOverlayView(OVERLAY_VIEWS.NONE)
+              navigate('/stats')
+            }}
           />
         )
       default:
@@ -267,24 +248,52 @@ function AppContent() {
     }
   }
 
+  const isOverlayActive = overlayView !== OVERLAY_VIEWS.NONE
+
   return (
     <div className="app">
-      {renderView()}
-      {(view === VIEWS.HOME || view === VIEWS.STATS) && (
-        <Navigation
-          activeView={view}
-          onNavigate={handleNavigation}
-        />
+      {isOverlayActive ? (
+        renderOverlay()
+      ) : (
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <Home
+                sessions={sessions}
+                tags={tags}
+                onStartSession={() => setOverlayView(OVERLAY_VIEWS.START_SESSION)}
+              />
+            }
+          />
+          <Route
+            path="/stats"
+            element={
+              <Stats
+                sessions={sessions}
+                tags={tags}
+                onDeleteSession={deleteSession}
+                onDeleteTag={deleteTag}
+                onUpdateTag={updateTag}
+                onAddTag={addTag}
+                onAddSession={addSession}
+              />
+            }
+          />
+        </Routes>
       )}
+      {!isOverlayActive && <Navigation />}
     </div>
   )
 }
 
 function App() {
   return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
+    <HashRouter>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </HashRouter>
   )
 }
 
