@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react'
 import DonutChart from './DonutChart'
+import CalendarModal from './CalendarModal'
 import { TagIcon, CloseIcon, PlusIcon } from './Icons'
 import './Stats.css'
 
@@ -12,11 +13,12 @@ const TrashIcon = ({ className }) => (
   </svg>
 )
 
-const Stats = ({ sessions, tags, onDeleteSession, onDeleteTag, onAddTag }) => {
+const Stats = ({ sessions, tags, onDeleteSession, onDeleteTag, onAddTag, onStartSession }) => {
   const [timeRange, setTimeRange] = useState('today')
   const [selectedTag, setSelectedTag] = useState(null)
   const [showTagDropdown, setShowTagDropdown] = useState(false)
   const [showManageTasks, setShowManageTasks] = useState(false)
+  const [showCalendar, setShowCalendar] = useState(false)
   const [newTagName, setNewTagName] = useState('')
   const [newTagColor, setNewTagColor] = useState('#F6AD55')
 
@@ -100,14 +102,9 @@ const Stats = ({ sessions, tags, onDeleteSession, onDeleteTag, onAddTag }) => {
       <div className="container">
         <div className="stats-filters">
           <button
-            className={`filter-btn calendar ${timeRange === 'today' ? 'active' : ''}`}
-            onClick={() => {
-              const ranges = ['today', '7d', '4w', '12mo']
-              const currentIndex = ranges.indexOf(timeRange)
-              const nextIndex = (currentIndex + 1) % ranges.length
-              setTimeRange(ranges[nextIndex])
-            }}
-            title="Cycle through time ranges"
+            className="filter-btn calendar"
+            onClick={() => setShowCalendar(true)}
+            title="Open calendar"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <rect x="3" y="4" width="18" height="18" rx="2" />
@@ -285,6 +282,17 @@ const Stats = ({ sessions, tags, onDeleteSession, onDeleteTag, onAddTag }) => {
           </div>
         </div>
       )}
+
+      {/* Calendar Modal */}
+      <CalendarModal
+        isOpen={showCalendar}
+        onClose={() => setShowCalendar(false)}
+        sessions={sessions}
+        onStartSession={() => {
+          setShowCalendar(false)
+          onStartSession && onStartSession()
+        }}
+      />
     </div>
   )
 }

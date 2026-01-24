@@ -18,8 +18,33 @@ router.get(
   passport.authenticate('google', { session: false, failureRedirect: '/' }),
   (req, res) => {
     const token = generateToken(req.user._id)
-    // Redirect to frontend with token
-    res.redirect(`${process.env.CLIENT_URL}?token=${token}`)
+    const user = {
+      id: req.user._id,
+      name: req.user.name,
+      email: req.user.email,
+      avatar: req.user.avatar,
+    }
+
+    // Send HTML that posts message to opener and closes
+    res.send(`
+      <!DOCTYPE html>
+      <html>
+        <head><title>Login Successful</title></head>
+        <body>
+          <p>Login successful! This window will close automatically.</p>
+          <script>
+            if (window.opener) {
+              window.opener.postMessage({
+                type: 'AUTH_SUCCESS',
+                token: '${token}',
+                user: ${JSON.stringify(user)}
+              }, '*');
+            }
+            window.close();
+          </script>
+        </body>
+      </html>
+    `)
   }
 )
 

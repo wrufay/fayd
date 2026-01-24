@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { AuthProvider } from './context/AuthContext'
 import Home from './components/Home'
 import StartSession from './components/StartSession'
 import QuoteScreen from './components/QuoteScreen'
@@ -187,6 +188,7 @@ function App() {
             onDeleteSession={deleteSession}
             onDeleteTag={deleteTag}
             onAddTag={addTag}
+            onStartSession={() => setView(VIEWS.START_SESSION)}
           />
         )
       default:
@@ -195,15 +197,17 @@ function App() {
   }
 
   return (
-    <div className="app">
-      {renderView()}
-      {(view === VIEWS.HOME || view === VIEWS.STATS) && (
-        <Navigation
-          activeView={view}
-          onNavigate={handleNavigation}
-        />
-      )}
-    </div>
+    <AuthProvider>
+      <div className="app">
+        {renderView()}
+        {(view === VIEWS.HOME || view === VIEWS.STATS) && (
+          <Navigation
+            activeView={view}
+            onNavigate={handleNavigation}
+          />
+        )}
+      </div>
+    </AuthProvider>
   )
 }
 

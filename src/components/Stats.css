@@ -22,7 +22,8 @@
 
 .stats-filters {
   display: flex;
-  gap: 12px;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 16px;
 }
 
