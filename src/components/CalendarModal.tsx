@@ -3,20 +3,6 @@ import { CloseIcon, PlusIcon } from './Icons'
 import { cn } from '../lib/utils'
 import type { Session } from '../types'
 
-const CalendarIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-8 h-8 text-primary-blue">
-    <rect x="3" y="4" width="18" height="18" rx="2" />
-    <line x1="16" y1="2" x2="16" y2="6" />
-    <line x1="8" y1="2" x2="8" y2="6" />
-    <line x1="3" y1="10" x2="21" y2="10" />
-    <circle cx="8" cy="14" r="1" fill="currentColor" />
-    <circle cx="12" cy="14" r="1" fill="currentColor" />
-    <circle cx="16" cy="14" r="1" fill="currentColor" />
-    <circle cx="8" cy="18" r="1" fill="currentColor" />
-    <circle cx="12" cy="18" r="1" fill="currentColor" />
-  </svg>
-)
-
 const ChevronLeft = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <polyline points="15,18 9,12 15,6" />
@@ -47,13 +33,6 @@ interface CalendarModalProps {
   onAddMissedTime: (date: Date) => void
 }
 
-interface TimeSummaries {
-  thisWeek: number
-  lastWeek: number
-  thisMonth: number
-  lastMonth: number
-}
-
 const CalendarModal = ({ isOpen, onClose, sessions, onAddMissedTime }: CalendarModalProps) => {
   const [currentDate, setCurrentDate] = useState<Date>(new Date())
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
@@ -63,41 +42,6 @@ const CalendarModal = ({ isOpen, onClose, sessions, onAddMissedTime }: CalendarM
     d.setHours(0, 0, 0, 0)
     return d
   }, [])
-
-  // Calculate time summaries
-  const timeSummaries: TimeSummaries = useMemo(() => {
-    const now = new Date()
-    const dayMs = 24 * 60 * 60 * 1000
-
-    // Start of this week (Sunday)
-    const startOfWeek = new Date(now)
-    startOfWeek.setDate(now.getDate() - now.getDay())
-    startOfWeek.setHours(0, 0, 0, 0)
-
-    // Start of last week
-    const startOfLastWeek = new Date(startOfWeek.getTime() - 7 * dayMs)
-    const endOfLastWeek = new Date(startOfWeek.getTime() - 1)
-
-    // Start of this month
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
-
-    // Start of last month
-    const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1)
-    const endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0)
-
-    const calcTime = (start: Date, end?: Date): number => {
-      return sessions
-        .filter(s => s.startTime >= start.getTime() && s.startTime <= (end?.getTime() || Date.now()))
-        .reduce((sum, s) => sum + (s.focusTime || 0), 0)
-    }
-
-    return {
-      thisWeek: calcTime(startOfWeek),
-      lastWeek: calcTime(startOfLastWeek, endOfLastWeek),
-      thisMonth: calcTime(startOfMonth),
-      lastMonth: calcTime(startOfLastMonth, endOfLastMonth),
-    }
-  }, [sessions])
 
   // Calculate streak
   const streak = useMemo(() => {
@@ -234,36 +178,15 @@ const CalendarModal = ({ isOpen, onClose, sessions, onAddMissedTime }: CalendarM
   const monthName = currentDate.toLocaleDateString('en-US', { month: 'long' })
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-[200] flex items-start justify-center animate-fadeIn" onClick={onClose}>
-      <div className="w-extension max-h-full bg-cream overflow-y-auto animate-slideUp" onClick={(e: MouseEvent) => e.stopPropagation()}>
-        <div className="flex justify-between items-center px-5 py-4 bg-white">
+    <div className="fixed inset-0 bg-black/50 z-[200] flex items-center justify-center animate-fadeIn p-4" onClick={onClose}>
+      <div className="w-extension max-h-[90vh] bg-cream overflow-y-auto animate-slideUp rounded-2xl" onClick={(e: MouseEvent) => e.stopPropagation()}>
+        <div className="flex justify-between items-center px-5 py-4 bg-white rounded-t-2xl">
           <button className="bg-transparent border-none cursor-pointer p-2 text-text-muted hover:text-text-dark transition-colors [&_svg]:w-6 [&_svg]:h-6" onClick={onClose}>
             <CloseIcon />
           </button>
-          <CalendarIcon />
         </div>
 
         <div className="p-5">
-          {/* Time Summary Cards */}
-          <div className="flex gap-2 mb-6 overflow-x-auto pb-1">
-            <div className="flex-1 min-w-[75px] bg-primary-blue-light rounded-[12px] py-3 px-2 text-center">
-              <span className="block sans-regular text-[11px] text-primary-blue mb-1">This week</span>
-              <span className="block sans-bold text-sm text-text-dark">{formatDuration(timeSummaries.thisWeek)}</span>
-            </div>
-            <div className="flex-1 min-w-[75px] bg-primary-blue-light rounded-[12px] py-3 px-2 text-center">
-              <span className="block sans-regular text-[11px] text-primary-blue mb-1">Last week</span>
-              <span className="block sans-bold text-sm text-text-dark">{formatDuration(timeSummaries.lastWeek)}</span>
-            </div>
-            <div className="flex-1 min-w-[75px] bg-primary-blue-light rounded-[12px] py-3 px-2 text-center">
-              <span className="block sans-regular text-[11px] text-primary-blue mb-1">This month</span>
-              <span className="block sans-bold text-sm text-text-dark">{formatDuration(timeSummaries.thisMonth)}</span>
-            </div>
-            <div className="flex-1 min-w-[75px] bg-primary-blue-light rounded-[12px] py-3 px-2 text-center">
-              <span className="block sans-regular text-[11px] text-primary-blue mb-1">Prev month</span>
-              <span className="block sans-bold text-sm text-text-dark">{formatDuration(timeSummaries.lastMonth)}</span>
-            </div>
-          </div>
-
           {/* Streak */}
           <div className="flex items-center justify-center gap-3 mb-6">
             <span className="flex-1 h-px bg-gradient-to-r from-transparent via-text-muted to-transparent opacity-30"></span>
