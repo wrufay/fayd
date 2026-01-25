@@ -36,6 +36,15 @@ export interface ChartDataItem {
   color: string
 }
 
+// Quick link types
+export interface QuickLink {
+  id: string
+  url: string
+  type: string
+  label: string
+  order?: number
+}
+
 // API types
 export interface ApiMethods {
   createTag: (name: string, color: string) => Promise<Tag>
@@ -43,6 +52,8 @@ export interface ApiMethods {
   deleteTag: (tagId: string) => Promise<void>
   createSession: (sessionData: Partial<Session>) => Promise<Session>
   deleteSession: (sessionId: string) => Promise<void>
+  createQuickLink: (url: string, type: string, label: string) => Promise<QuickLink>
+  deleteQuickLink: (linkId: string) => Promise<void>
 }
 
 // Auth context types
@@ -54,6 +65,7 @@ export interface AuthContextType {
   getToken: () => string | null
   sessions: Session[]
   tags: Tag[]
+  quickLinks: QuickLink[]
   dataLoaded: boolean
   api: ApiMethods
   refreshData: () => Promise<void>

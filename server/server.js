@@ -7,6 +7,7 @@ import configurePassport from './config/passport.js'
 import authRoutes from './routes/auth.js'
 import tagRoutes from './routes/tags.js'
 import sessionRoutes from './routes/sessions.js'
+import quickLinkRoutes from './routes/quicklinks.js'
 
 // Load env vars
 dotenv.config()
@@ -42,6 +43,7 @@ app.use(passport.initialize())
 app.use('/auth', authRoutes)
 app.use('/api/tags', tagRoutes)
 app.use('/api/sessions', sessionRoutes)
+app.use('/api/quicklinks', quickLinkRoutes)
 
 // Health check
 app.get('/health', (req, res) => {

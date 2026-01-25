@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react'
 import { API_URL } from '../config/api'
-import type { User, Tag, Session, AuthContextType, ApiMethods } from '../types'
+import type { User, Tag, Session, QuickLink, AuthContextType, ApiMethods } from '../types'
 
 // Backend response types
 interface BackendTag {
@@ -18,6 +18,14 @@ interface BackendSession {
   endTime: string | null
   focusTime: number
   breakTime: number
+}
+
+interface BackendQuickLink {
+  _id: string
+  url: string
+  type: string
+  label: string
+  order: number
 }
 
 interface AuthMessage {
@@ -66,14 +74,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [loading, setLoading] = useState(true)
   const [sessions, setSessions] = useState<Session[]>([])
   const [tags, setTags] = useState<Tag[]>([])
+  const [quickLinks, setQuickLinks] = useState<QuickLink[]>([])
   const [dataLoaded, setDataLoaded] = useState(false)
 
   // Load data from backend when logged in
   const loadUserData = useCallback(async () => {
     try {
-      const [tagsData, sessionsData] = await Promise.all([
+      const [tagsData, sessionsData, quickLinksData] = await Promise.all([
         authFetch<BackendTag[]>('/api/tags'),
         authFetch<BackendSession[]>('/api/sessions'),
+        authFetch<BackendQuickLink[]>('/api/quicklinks'),
       ])
 
       // Transform backend data to match frontend format
@@ -94,8 +104,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         breakTime: s.breakTime,
       }))
 
+      const formattedQuickLinks: QuickLink[] = quickLinksData.map(l => ({
+        id: l._id,
+        url: l.url,
+        type: l.type,
+        label: l.label,
+        order: l.order,
+      }))
+
       setTags(formattedTags)
       setSessions(formattedSessions)
+      setQuickLinks(formattedQuickLinks)
       setDataLoaded(true)
     } catch (error) {
       console.error('Failed to load user data:', error)
@@ -137,6 +156,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setDataLoaded(false)
       setSessions([])
       setTags([])
+      setQuickLinks([])
     }
   }, [user, dataLoaded, loadUserData])
 
@@ -161,6 +181,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setDataLoaded(false)
     setSessions([])
     setTags([])
+    setQuickLinks([])
   }
 
   const getToken = () => localStorage.getItem('fayd-token')
@@ -229,6 +250,28 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       await authFetch(`/api/sessions/${sessionId}`, { method: 'DELETE' })
       setSessions(prev => prev.filter(s => s.id !== sessionId))
     },
+
+    // Quick Links
+    createQuickLink: async (url: string, type: string, label: string) => {
+      const link = await authFetch<BackendQuickLink>('/api/quicklinks', {
+        method: 'POST',
+        body: JSON.stringify({ url, type, label }),
+      })
+      const formatted: QuickLink = {
+        id: link._id,
+        url: link.url,
+        type: link.type,
+        label: link.label,
+        order: link.order,
+      }
+      setQuickLinks(prev => [...prev, formatted])
+      return formatted
+    },
+
+    deleteQuickLink: async (linkId: string) => {
+      await authFetch(`/api/quicklinks/${linkId}`, { method: 'DELETE' })
+      setQuickLinks(prev => prev.filter(l => l.id !== linkId))
+    },
   }
 
   return (
@@ -240,6 +283,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       getToken,
       sessions,
       tags,
+      quickLinks,
       dataLoaded,
       api,
       refreshData: loadUserData,
