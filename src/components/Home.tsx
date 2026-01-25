@@ -91,7 +91,7 @@ const Home = ({ sessions, tags, onStartSession }: HomeProps) => {
               key={i}
               className={cn(
                 "w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-full text-xs bg-cream animate-scaleIn transition-all duration-200",
-                day.completed ? "bg-primary text-white" : "text-text-muted",
+                day.completed ? "bg-primary-light text-primary font-bold" : "text-text-muted",
                 day.isToday && !day.completed && "border-2 border-primary-light"
               )}
               style={{ animationDelay: `${0.1 + i * 0.05}s` }}

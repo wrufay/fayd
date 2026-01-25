@@ -95,8 +95,13 @@ const Stats = ({ sessions, tags, onDeleteSession, onDeleteTag, onUpdateTag, onAd
 
   const filteredSessions = useMemo(() => {
     const now = Date.now()
+
+    // Get start of today (midnight)
+    const todayStart = new Date()
+    todayStart.setHours(0, 0, 0, 0)
+
     const ranges: Record<TimeRange, number> = {
-      today: now - 24 * 60 * 60 * 1000,
+      today: todayStart.getTime(),
       '7d': now - 7 * 24 * 60 * 60 * 1000,
       '4w': now - 28 * 24 * 60 * 60 * 1000,
       '12mo': now - 365 * 24 * 60 * 60 * 1000,
@@ -216,7 +221,7 @@ const Stats = ({ sessions, tags, onDeleteSession, onDeleteTag, onUpdateTag, onAd
                 <button
                   className={cn(
                     "flex items-center gap-2 w-full py-3 px-4 border-none bg-transparent text-sm text-text-dark cursor-pointer transition-colors text-left hover:bg-primary-blue-light",
-                    !selectedTag && "bg-primary-blue text-gray-500"
+                    !selectedTag && "bg-primary-blue-light text-primary-blue"
                   )}
                   onClick={() => { setSelectedTag(null); setShowTagDropdown(false); }}
                 >
@@ -227,7 +232,7 @@ const Stats = ({ sessions, tags, onDeleteSession, onDeleteTag, onUpdateTag, onAd
                     key={tag.id}
                     className={cn(
                       "flex items-center gap-2 w-full py-3 px-4 border-none bg-transparent text-sm text-text-dark cursor-pointer transition-colors text-left hover:bg-primary-blue-light",
-                      selectedTag === tag.id && "bg-primary-blue text-gray-500"
+                      selectedTag === tag.id && "bg-primary-blue-light text-primary-blue"
                     )}
                     onClick={() => { setSelectedTag(tag.id); setShowTagDropdown(false); }}
                   >
@@ -251,7 +256,7 @@ const Stats = ({ sessions, tags, onDeleteSession, onDeleteTag, onUpdateTag, onAd
               key={tab.key}
               className={cn(
                 "py-2 sm:py-2.5 px-3 sm:px-4 rounded-sm border-none bg-transparent coding-regular text-xs sm:text-sm text-text-muted cursor-pointer transition-all duration-200 hover:bg-primary-blue-light whitespace-nowrap",
-                timeRange === tab.key && "text-gray-700"
+                timeRange === tab.key && "bg-primary-blue-light text-primary-blue"
               )}
               onClick={() => setTimeRange(tab.key)}
             >

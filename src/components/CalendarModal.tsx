@@ -220,9 +220,9 @@ const CalendarModal = ({ isOpen, onClose, sessions, onAddMissedTime }: CalendarM
                     "aspect-square flex items-center justify-center border-none bg-transparent sans-regular text-base text-text-dark cursor-pointer rounded-full transition-all duration-200",
                     !day && "cursor-default",
                     day && "hover:bg-primary-blue-light",
-                    daysWithSessions.has(day as number) && !isToday(day) && "bg-primary-blue text-white",
+                    daysWithSessions.has(day as number) && !isToday(day) && "bg-primary-blue-light text-primary-blue font-bold",
                     isToday(day) && "border-2 border-primary-blue bg-transparent text-primary-blue",
-                    isSelected(day) && "shadow-[0_0_0_3px_rgba(75,110,245,0.3)]"
+                    isSelected(day) && "shadow-[0_0_0_3px_rgba(4,102,200,0.3)]"
                   )}
                   onClick={() => handleDayClick(day)}
                   disabled={!day}
