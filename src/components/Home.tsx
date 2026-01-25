@@ -1,9 +1,16 @@
-import { useMemo } from 'react'
+import { useMemo, useState, useEffect, KeyboardEvent, ChangeEvent } from 'react'
 import DonutChart from './DonutChart'
 import { PlayIcon } from './Icons'
 import { useAuth } from '../context/AuthContext'
 import { cn } from '../lib/utils'
+import { storage } from '../lib/platform'
 import type { Session, Tag } from '../types'
+
+interface TodoItem {
+  id: string
+  text: string
+  completed: boolean
+}
 
 interface HomeProps {
   sessions: Session[]
@@ -20,6 +27,42 @@ interface WeekDay {
 const Home = ({ sessions, tags, onStartSession }: HomeProps) => {
   const { user } = useAuth()
   const today = new Date()
+  const [todos, setTodos] = useState<TodoItem[]>([])
+  const [newTodoText, setNewTodoText] = useState('')
+
+  // Load todos from storage on mount
+  useEffect(() => {
+    storage.get(['todos']).then((result) => {
+      if (result.todos) setTodos(result.todos as TodoItem[])
+    })
+  }, [])
+
+  // Save todos to storage when they change
+  useEffect(() => {
+    storage.set({ todos })
+  }, [todos])
+
+  const addTodo = () => {
+    if (!newTodoText.trim() || todos.length >= 5) return
+    const newTodo: TodoItem = {
+      id: Date.now().toString(),
+      text: newTodoText.trim(),
+      completed: false,
+    }
+    setTodos([...todos, newTodo])
+    setNewTodoText('')
+  }
+
+  const toggleTodo = (id: string) => {
+    setTodos(todos.map(todo =>
+      todo.id === id ? { ...todo, completed: !todo.completed } : todo
+    ))
+  }
+
+  const deleteTodo = (id: string) => {
+    setTodos(todos.filter(todo => todo.id !== id))
+  }
+
   const greeting = useMemo(() => {
     const hour = today.getHours()
     if (hour < 12) return 'good morning'
@@ -125,6 +168,69 @@ const Home = ({ sessions, tags, onStartSession }: HomeProps) => {
           </div>
         </div>
       </button>
+
+      {/* To-do List */}
+      <div className="bg-white rounded-lg p-4 sm:p-5 shadow-md animate-slideUp" style={{ animationDelay: '0.3s' }}>
+        <div className="flex flex-col gap-2">
+          {todos.map(todo => (
+            <div
+              key={todo.id}
+              className="flex items-center gap-3 group py-1"
+            >
+              <button
+                className={cn(
+                  "w-[18px] h-[18px] border-2 rounded-[4px] flex-shrink-0 flex items-center justify-center transition-all duration-200 cursor-pointer",
+                  todo.completed
+                    ? "bg-primary-blue border-primary-blue text-white"
+                    : "border-text-muted bg-transparent hover:border-primary-blue"
+                )}
+                onClick={() => toggleTodo(todo.id)}
+              >
+                {todo.completed && (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="w-3 h-3">
+                    <polyline points="20,6 9,17 4,12" />
+                  </svg>
+                )}
+              </button>
+              <span
+                className={cn(
+                  "flex-1 sans-regular text-sm transition-all duration-200",
+                  todo.completed ? "text-text-muted line-through" : "text-text-dark"
+                )}
+              >
+                {todo.text}
+              </span>
+              <button
+                className="w-6 h-6 flex items-center justify-center text-text-muted opacity-0 group-hover:opacity-100 hover:text-accent-red transition-all duration-200 cursor-pointer bg-transparent border-none"
+                onClick={() => deleteTodo(todo.id)}
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
+          ))}
+
+          {todos.length < 5 && (
+            <div className="flex items-center gap-3 py-1">
+              <div className="w-[18px] h-[18px] border-2 border-dashed border-text-muted/50 rounded-[4px] flex-shrink-0" />
+              <input
+                type="text"
+                placeholder="Add a task..."
+                value={newTodoText}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => setNewTodoText(e.target.value)}
+                onKeyPress={(e: KeyboardEvent<HTMLInputElement>) => e.key === 'Enter' && addTodo()}
+                className="flex-1 bg-transparent border-none outline-none sans-regular text-sm text-text-dark placeholder:text-text-muted/50"
+              />
+            </div>
+          )}
+        </div>
+
+        {todos.length >= 5 && (
+          <p className="text-xs text-text-muted mt-2 italic">Maximum 5 tasks</p>
+        )}
+      </div>
     </div>
   )
 }
