@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { TagIcon, StopwatchIcon, SettingsIcon, StopIcon, PauseIcon, PlayIcon, CloseIcon } from './Icons'
+import { TagIcon, StopwatchIcon, StopIcon, PauseIcon, PlayIcon, CloseIcon } from './Icons'
 import { cn } from '../lib/utils'
 import { storage } from '../lib/platform'
 import type { Session } from '../types'
@@ -117,17 +117,12 @@ const ActiveSession = ({ session, onUpdateSession, onEndSession, onDiscard }: Ac
 
   return (
     <div className="min-h-extension flex flex-col p-3 sm:p-5 animate-fadeIn">
-      <header className="flex items-center justify-between bg-primary-blue-light rounded-DEFAULT px-3 sm:px-4 py-2 sm:py-3 mb-6 sm:mb-10 animate-slideDown">
-        <div className="flex items-center gap-2 sans-regular text-sm text-primary-blue">
+      <header className="flex items-center justify-center gap-4 bg-primary-blue-light rounded-full px-4 sm:px-6 py-2 sm:py-3 mb-6 sm:mb-10 animate-slideDown mx-auto">
+        <div className="flex items-center gap-2 serif-regular text-sm text-primary-blue">
           <TagIcon color={session.tag.color} className="w-[18px] h-[18px]" />
           <span>{session.tag.name}</span>
         </div>
-        <div className="flex items-center gap-2">
-          <StopwatchIcon className="w-5 h-5 text-text-muted" />
-        </div>
-        <button className="w-9 h-9 flex items-center justify-center bg-white border-none rounded-lg cursor-pointer text-text-muted [&_svg]:w-5 [&_svg]:h-5">
-          <SettingsIcon />
-        </button>
+        <StopwatchIcon className="w-5 h-5 text-text-muted" />
       </header>
 
       <div className="flex-1 flex flex-col items-center justify-center animate-scaleIn">
