@@ -72,16 +72,10 @@ export interface AuthContextType {
 }
 
 // View types
-export type ViewType = 'home' | 'startSession' | 'quote' | 'active' | 'summary' | 'stats'
+export type ViewType = 'home' | 'startSession' | 'active' | 'summary' | 'stats'
 
 // Icon props
 export interface IconProps {
   className?: string
   color?: string
-}
-
-// Quote type
-export interface Quote {
-  text: string
-  author: string
 }

@@ -62,10 +62,8 @@ const SessionSummary = ({ session, onClose, onViewStats }: SessionSummaryProps) 
       </header>
 
       <div className="bg-gradient-to-br from-primary-light to-cream-dark px-3 sm:px-5 py-6 sm:py-8 text-center animate-slideUp">
-        <div className="flex items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-4 animate-scaleIn-delay">
-          <span className="text-xl sm:text-2xl animate-bounceIn">👏</span>
+        <div className="flex items-center justify-center mb-3 sm:mb-4 animate-scaleIn-delay">
           <span className="coding-regular text-3xl sm:text-4xl text-text-dark tracking-wide">{formatTime(totalTime)}</span>
-          <span className="text-xl sm:text-2xl animate-bounceIn">👏</span>
         </div>
         <div className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full sans-regular text-sm animate-scaleIn-delay">
           <TagIcon color={session.tag.color} className="w-4 h-4" />

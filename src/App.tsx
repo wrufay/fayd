@@ -3,7 +3,6 @@ import { HashRouter, Routes, Route, useNavigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import Home from './components/Home'
 import StartSession from './components/StartSession'
-import QuoteScreen from './components/QuoteScreen'
 import ActiveSession from './components/ActiveSession'
 import SessionSummary from './components/SessionSummary'
 import Stats from './components/Stats'
@@ -14,7 +13,6 @@ import type { Tag, Session } from './types'
 const OVERLAY_VIEWS = {
   NONE: 'none',
   START_SESSION: 'startSession',
-  QUOTE: 'quote',
   ACTIVE: 'active',
   SUMMARY: 'summary',
 } as const
@@ -65,28 +63,25 @@ function AppContent() {
 
   const startSession = () => {
     if (!selectedTag) return
-    setOverlayView(OVERLAY_VIEWS.QUOTE)
 
-    setTimeout(() => {
-      const session: Session = {
-        id: Date.now().toString(),
-        tag: selectedTag,
-        timerMode,
-        countdownMinutes: timerMode === 'countdown' ? countdownMinutes : null,
-        startTime: Date.now(),
-        focusTime: 0,
-        breakTime: 0,
-        isPaused: false,
-        isOnBreak: false,
-        lastUpdateTime: Date.now(),
-      }
-      setCurrentSession(session)
-      saveToStorage('activeSession', session)
+    const session: Session = {
+      id: Date.now().toString(),
+      tag: selectedTag,
+      timerMode,
+      countdownMinutes: timerMode === 'countdown' ? countdownMinutes : null,
+      startTime: Date.now(),
+      focusTime: 0,
+      breakTime: 0,
+      isPaused: false,
+      isOnBreak: false,
+      lastUpdateTime: Date.now(),
+    }
+    setCurrentSession(session)
+    saveToStorage('activeSession', session)
 
-      sendMessage({ type: 'START_SESSION', session })
+    sendMessage({ type: 'START_SESSION', session })
 
-      setOverlayView(OVERLAY_VIEWS.ACTIVE)
-    }, 3000)
+    setOverlayView(OVERLAY_VIEWS.ACTIVE)
   }
 
   const endSession = async (finalSession: Session) => {
@@ -212,8 +207,6 @@ function AppContent() {
             onAddTag={addTag}
           />
         )
-      case OVERLAY_VIEWS.QUOTE:
-        return <QuoteScreen tag={selectedTag} timerMode={timerMode} />
       case OVERLAY_VIEWS.ACTIVE:
         return (
           <ActiveSession

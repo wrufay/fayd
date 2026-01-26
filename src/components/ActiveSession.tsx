@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { TagIcon, StopwatchIcon, StopIcon, PauseIcon, PlayIcon, CloseIcon } from './Icons'
 import { cn } from '../lib/utils'
 import { storage } from '../lib/platform'
+import QuickLinksWidget from './QuickLinksWidget'
 import type { Session } from '../types'
 
 const SaveIcon = () => (
@@ -161,6 +162,11 @@ const ActiveSession = ({ session, onUpdateSession, onEndSession, onDiscard }: Ac
           </span>
           <span className="coding-regular text-sm">{isPaused ? 'Resume' : 'Pause'}</span>
         </button>
+      </div>
+
+      {/* Study Stack - Fixed at bottom */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-border z-[100]">
+        <QuickLinksWidget className="py-3" />
       </div>
 
       {/* Save Progress Modal */}
