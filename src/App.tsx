@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { HashRouter, Routes, Route, useNavigate } from 'react-router-dom'
+import { Analytics } from '@vercel/analytics/react'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import Home from './components/Home'
 import StartSession from './components/StartSession'
@@ -286,6 +287,7 @@ function App() {
       <AuthProvider>
         <AppContent />
       </AuthProvider>
+      <Analytics />
     </HashRouter>
   )
 }
