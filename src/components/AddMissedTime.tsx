@@ -168,35 +168,36 @@ const AddMissedTime = ({
         )}
 
         <div className="mt-8 animate-slideUp" style={{ animationDelay: '0.2s' }}>
-          <h3 className="serif-bold text-lg mb-4">Time range</h3>
+          <h3 className="serif-bold text-lg mb-1">Time range</h3>
+          <p className="serif-regular italic text-text-muted text-base mb-4">when did you focus?</p>
 
-          <div className="flex items-center justify-center gap-4">
-            <div className="flex flex-col items-center gap-2">
-              <label className="text-xs text-text-muted uppercase tracking-[1px]">From</label>
+          <div className="flex items-center justify-center gap-3">
+            <div className="flex flex-col items-center gap-1.5">
+              <label className="text-[10px] text-text-muted/60 uppercase tracking-[1px]">From</label>
               <input
                 type="time"
                 value={startTime}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => setStartTime(e.target.value)}
-                className="px-4 py-3 border-2 border-cream-dark rounded-sm sans-regular text-base text-text-dark outline-none focus:border-primary transition-colors bg-white text-center"
+                className="px-3 py-2.5 border border-text-muted/20 rounded-lg sans-regular text-sm text-text-dark outline-none focus:border-primary-blue/40 transition-colors bg-cream text-center"
               />
             </div>
 
-            <span className="text-text-muted mt-6">→</span>
+            <span className="text-text-muted/40 mt-5">→</span>
 
-            <div className="flex flex-col items-center gap-2">
-              <label className="text-xs text-text-muted uppercase tracking-[1px]">To</label>
+            <div className="flex flex-col items-center gap-1.5">
+              <label className="text-[10px] text-text-muted/60 uppercase tracking-[1px]">To</label>
               <input
                 type="time"
                 value={endTime}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => setEndTime(e.target.value)}
-                className="px-4 py-3 border-2 border-cream-dark rounded-sm sans-regular text-base text-text-dark outline-none focus:border-primary transition-colors bg-white text-center"
+                className="px-3 py-2.5 border border-text-muted/20 rounded-lg sans-regular text-sm text-text-dark outline-none focus:border-primary-blue/40 transition-colors bg-cream text-center"
               />
             </div>
           </div>
 
           {duration > 0 && (
-            <p className="text-center mt-4 text-sm text-text-muted animate-fadeIn">
-              Duration: <span className="sans-bold text-primary">{formatDuration(duration)}</span>
+            <p className="text-center mt-4 text-sm text-text-muted/70 animate-fadeIn">
+              Duration: <span className="sans-bold text-primary-blue">{formatDuration(duration)}</span>
             </p>
           )}
           {duration <= 0 && startTime && endTime && (
