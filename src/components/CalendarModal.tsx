@@ -1,7 +1,8 @@
 import { useState, useMemo, MouseEvent } from 'react'
 import { CloseIcon, PlusIcon } from './Icons'
+import DonutChart from './DonutChart'
 import { cn } from '../lib/utils'
-import type { Session } from '../types'
+import type { Session, ChartDataItem } from '../types'
 
 const ChevronLeft = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -36,6 +37,7 @@ interface CalendarModalProps {
 const CalendarModal = ({ isOpen, onClose, sessions, onAddMissedTime }: CalendarModalProps) => {
   const [currentDate, setCurrentDate] = useState<Date>(new Date())
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
+  const [showSessions, setShowSessions] = useState<boolean>(false)
 
   const today = useMemo(() => {
     const d = new Date()
@@ -95,6 +97,32 @@ const CalendarModal = ({ isOpen, onClose, sessions, onAddMissedTime }: CalendarM
     return selectedDateSessions.reduce((sum, s) => sum + (s.focusTime || 0), 0)
   }, [selectedDateSessions])
 
+  // Chart data grouped by tag for selected date
+  const selectedDateChartData: ChartDataItem[] = useMemo(() => {
+    const tagTotals = new Map<string, { name: string; color: string; time: number }>()
+
+    selectedDateSessions.forEach(session => {
+      const tagId = session.tag.id
+      const existing = tagTotals.get(tagId)
+      if (existing) {
+        existing.time += session.focusTime || 0
+      } else {
+        tagTotals.set(tagId, {
+          name: session.tag.name,
+          color: session.tag.color,
+          time: session.focusTime || 0
+        })
+      }
+    })
+
+    return Array.from(tagTotals.entries()).map(([id, data]) => ({
+      id,
+      label: data.name,
+      value: data.time,
+      color: data.color
+    }))
+  }, [selectedDateSessions])
+
   // Calendar grid
   const calendarDays = useMemo(() => {
     const year = currentDate.getFullYear()
@@ -152,6 +180,7 @@ const CalendarModal = ({ isOpen, onClose, sessions, onAddMissedTime }: CalendarM
     if (day) {
       const newDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day)
       setSelectedDate(newDate)
+      setShowSessions(false)
     }
   }
 
@@ -213,23 +242,25 @@ const CalendarModal = ({ isOpen, onClose, sessions, onAddMissedTime }: CalendarM
               ))}
             </div>
             <div className="grid grid-cols-7 gap-1">
-              {calendarDays.map((day, i) => (
-                <button
-                  key={i}
-                  className={cn(
-                    "aspect-square flex items-center justify-center border-none bg-transparent sans-regular text-base text-text-dark cursor-pointer rounded-full transition-all duration-200",
-                    !day && "cursor-default",
-                    day && "hover:bg-primary-blue-light",
-                    daysWithSessions.has(day as number) && !isToday(day) && "bg-primary-blue-light text-primary-blue font-bold",
-                    isToday(day) && "border-2 border-primary-blue bg-transparent text-primary-blue",
-                    isSelected(day) && "shadow-[0_0_0_3px_rgba(4,102,200,0.3)]"
-                  )}
-                  onClick={() => handleDayClick(day)}
-                  disabled={!day}
-                >
-                  {day}
-                </button>
-              ))}
+              {calendarDays.map((day, i) => {
+                const hasSession = daysWithSessions.has(day as number)
+                return (
+                  <button
+                    key={i}
+                    className={cn(
+                      "aspect-square flex items-center justify-center border-none sans-regular text-base text-text-dark cursor-pointer rounded-full transition-all duration-200",
+                      !day && "cursor-default",
+                      hasSession && "bg-primary-blue-light text-primary-blue",
+                      isToday(day) && "border-2 border-primary-blue",
+                      isSelected(day) && "shadow-[0_0_0_3px_rgba(4,102,200,0.3)]"
+                    )}
+                    onClick={() => handleDayClick(day)}
+                    disabled={!day}
+                  >
+                    {day}
+                  </button>
+                )
+              })}
             </div>
           </div>
 
@@ -248,33 +279,54 @@ const CalendarModal = ({ isOpen, onClose, sessions, onAddMissedTime }: CalendarM
               </button>
             </div>
 
-            <div className="flex flex-col gap-3 mb-4">
-              {selectedDateSessions.length === 0 ? (
-                <p className="text-center text-text-muted sans-regular text-sm py-5">No sessions on this day</p>
-              ) : (
-                selectedDateSessions.map(session => (
-                  <div key={session.id} className="bg-primary-blue-light rounded-[12px] p-4 flex justify-between items-center cursor-pointer transition-transform duration-200 hover:translate-x-1">
-                    <div className="flex-1">
-                      <span className="sans-regular text-xs text-text-muted tracking-[0.3px] mb-1 block">
-                        {new Date(session.startTime).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }).toUpperCase()} {formatTime(session.startTime)}-{formatTime(session.endTime!)}
-                      </span>
-                      <div className="flex items-center gap-2">
-                        <TagIcon color={session.tag.color} />
-                        <span className="sans-bold text-base text-text-dark">{session.tag.name}</span>
-                        <span className="sans-regular text-sm text-text-muted">• {formatDuration(session.focusTime)}</span>
-                      </div>
+            {/* Task Distribution Chart */}
+            <div className="flex items-center gap-4 mb-4 pb-4 border-b border-cream-dark">
+              <div className="flex-shrink-0">
+                <DonutChart data={selectedDateChartData} size={80} strokeWidth={14} />
+              </div>
+              <div className="flex flex-col gap-2">
+                {selectedDateChartData.length === 0 ? (
+                  <span className="sans-regular text-sm text-text-muted">No tasks recorded</span>
+                ) : (
+                  selectedDateChartData.map(item => (
+                    <div key={item.id} className="flex items-center gap-2 text-sm text-text-dark">
+                      <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: item.color }} />
+                      <span>{item.label} • {formatDuration(item.value)}</span>
                     </div>
-                  </div>
-                ))
-              )}
+                  ))
+                )}
+              </div>
             </div>
 
-            <button
-              className="block w-full text-center bg-transparent border-none sans-bold text-sm text-primary-blue tracking-[0.5px] cursor-pointer p-3 transition-opacity hover:opacity-80 hover:underline"
-              onClick={() => onAddMissedTime(selectedDate)}
-            >
-              ADD MISSED TIME
-            </button>
+            {selectedDateSessions.length > 0 && (
+              <>
+                <button
+                  className="block w-full text-center bg-primary-blue-light border-none sans-bold text-sm text-primary-blue tracking-[0.5px] cursor-pointer p-3 rounded-lg transition-all hover:bg-primary-blue/20"
+                  onClick={() => setShowSessions(!showSessions)}
+                >
+                  {showSessions ? 'HIDE DETAILS' : 'SEE DETAILS'}
+                </button>
+
+                {showSessions && (
+                  <div className="flex flex-col gap-3 mt-3 animate-fadeIn">
+                    {selectedDateSessions.map(session => (
+                      <div key={session.id} className="bg-primary-blue-light rounded-[12px] p-4 flex justify-between items-center cursor-pointer transition-transform duration-200 hover:translate-x-1">
+                        <div className="flex-1">
+                          <span className="sans-regular text-xs text-text-muted tracking-[0.3px] mb-1 block">
+                            {new Date(session.startTime).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }).toUpperCase()} {formatTime(session.startTime)}-{formatTime(session.endTime!)}
+                          </span>
+                          <div className="flex items-center gap-2">
+                            <TagIcon color={session.tag.color} />
+                            <span className="sans-bold text-base text-text-dark">{session.tag.name}</span>
+                            <span className="sans-regular text-sm text-text-muted">• {formatDuration(session.focusTime)}</span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </>
+            )}
           </div>
         </div>
       </div>

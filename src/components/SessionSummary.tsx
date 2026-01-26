@@ -1,7 +1,19 @@
 import { useMemo } from 'react'
-import DonutChart from './DonutChart'
 import { CloseIcon, TagIcon } from './Icons'
-import type { Session, ChartDataItem } from '../types'
+import type { Session } from '../types'
+
+const MOTIVATIONAL_MESSAGES = [
+  "Great work! Every minute of focus brings you closer to your goals.",
+  "You showed up and put in the work. That's what matters most.",
+  "Consistency beats intensity. Keep showing up!",
+  "Another session complete. You're building something great.",
+  "Focus is a superpower. You just used yours.",
+  "Small steps lead to big achievements. Well done!",
+  "You chose growth over distraction. That takes strength.",
+  "Progress, not perfection. You're on the right track.",
+  "Your future self will thank you for this session.",
+  "Discipline is choosing what you want most over what you want now.",
+]
 
 interface SessionSummaryProps {
   session: Session | null
@@ -19,17 +31,6 @@ const SessionSummary = ({ session, onClose, onViewStats }: SessionSummaryProps) 
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
   }
 
-  const formatTimeShort = (ms: number): string => {
-    const totalSeconds = Math.floor(ms / 1000)
-    const minutes = Math.floor(totalSeconds / 60)
-    const seconds = totalSeconds % 60
-
-    if (minutes > 0) {
-      return `${minutes}m ${seconds}s`
-    }
-    return `${seconds}s`
-  }
-
   const formatTimeOfDay = (timestamp: number): string => {
     const date = new Date(timestamp)
     return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })
@@ -40,10 +41,11 @@ const SessionSummary = ({ session, onClose, onViewStats }: SessionSummaryProps) 
     return date.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })
   }
 
-  const chartData: ChartDataItem[] = useMemo(() => [
-    { id: 'focus', label: 'deep focus', value: session?.focusTime || 0, color: '#ef5f33' },
-    { id: 'break', label: 'on break', value: session?.breakTime || 0, color: '#f1c40f' },
-  ], [session])
+  // Pick a random motivational message (stable per session)
+  const motivationalMessage = useMemo(() => {
+    const index = Math.floor(Math.random() * MOTIVATIONAL_MESSAGES.length)
+    return MOTIVATIONAL_MESSAGES[index]
+  }, [])
 
   const totalTime = (session?.focusTime || 0) + (session?.breakTime || 0)
 
@@ -61,7 +63,7 @@ const SessionSummary = ({ session, onClose, onViewStats }: SessionSummaryProps) 
         <div className="w-9 sm:w-10" />
       </header>
 
-      <div className="bg-gradient-to-br from-primary-light to-cream-dark px-3 sm:px-5 py-6 sm:py-8 text-center animate-slideUp">
+      <div className="bg-gradient-to-br from-primary-light to-cream-dark px-3 sm:px-5 py-6 sm:py-8 mx-3 sm:mx-5 rounded-2xl text-center animate-slideUp">
         <div className="flex items-center justify-center mb-3 sm:mb-4 animate-scaleIn-delay">
           <span className="coding-regular text-3xl sm:text-4xl text-text-dark tracking-wide">{formatTime(totalTime)}</span>
         </div>
@@ -71,24 +73,11 @@ const SessionSummary = ({ session, onClose, onViewStats }: SessionSummaryProps) 
         </div>
       </div>
 
-      <div className="flex items-center gap-4 sm:gap-6 px-3 sm:px-5 py-4 sm:py-6 animate-fadeIn-delay">
-        <div className="flex-shrink-0">
-          <DonutChart data={chartData} size={110} strokeWidth={20} />
-        </div>
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center gap-2 text-sm text-text-dark">
-            <span className="w-2.5 h-2.5 rounded-full flex-shrink-0 bg-primary" />
-            <span>{formatTimeShort(session.focusTime)} deep focus</span>
-          </div>
-          <div className="flex items-center gap-2 text-sm text-text-dark">
-            <span className="w-2.5 h-2.5 rounded-full flex-shrink-0 bg-primary opacity-40" />
-            <span>0s multitasking</span>
-          </div>
-          <div className="flex items-center gap-2 text-sm text-text-dark">
-            <span className="w-2.5 h-2.5 rounded-full flex-shrink-0 bg-accent-yellow" />
-            <span>{formatTimeShort(session.breakTime)} on break</span>
-          </div>
-        </div>
+      {/* Motivational Message */}
+      <div className="px-5 sm:px-8 py-6 sm:py-8 text-center animate-fadeIn-delay">
+        <p className="serif-regular text-lg sm:text-xl text-text-dark leading-relaxed">
+          {motivationalMessage}
+        </p>
       </div>
 
       <div className="px-3 sm:px-5 py-3 sm:py-4 border-t border-b border-cream-dark">
@@ -102,7 +91,7 @@ const SessionSummary = ({ session, onClose, onViewStats }: SessionSummaryProps) 
         </div>
       </div>
 
-      <button className="inline-flex items-center justify-center gap-2 py-2.5 sm:py-3 px-4 sm:px-6 rounded-full coding-regular text-xs sm:text-sm border-[1.5px] cursor-pointer transition-all duration-300 bg-crimson border-crimson text-white hover:bg-primary-dark hover:border-primary-dark hover:-translate-y-px hover:shadow-button active:translate-y-0 mx-3 sm:mx-5 my-4 sm:my-5 w-[calc(100%-24px)] sm:w-[calc(100%-40px)] animate-slideUp-delay" onClick={onViewStats}>
+      <button className="inline-flex items-center justify-center gap-2 py-2 px-5 rounded-full coding-regular text-xs border-[1.5px] cursor-pointer transition-all duration-300 bg-crimson/70 border-crimson/70 text-white hover:bg-crimson hover:border-crimson hover:-translate-y-px active:translate-y-0 mx-auto my-4 animate-slideUp-delay" onClick={onViewStats}>
         SEE MORE STATS
       </button>
     </div>

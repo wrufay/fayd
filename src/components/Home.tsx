@@ -24,6 +24,116 @@ interface WeekDay {
   isToday: boolean
 }
 
+// GitHub-style contribution graph component (12 weeks)
+const ContributionGraph = ({ sessions }: { sessions: Session[] }) => {
+  const contributionData = useMemo(() => {
+    const weeks = 12
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+
+    const currentDayOfWeek = today.getDay()
+    const startDate = new Date(today)
+    startDate.setDate(startDate.getDate() - (weeks * 7) + (7 - currentDayOfWeek))
+
+    // Sum focus time per day (in minutes)
+    const focusTimePerDay: Map<string, number> = new Map()
+    sessions.forEach(session => {
+      const date = new Date(session.startTime)
+      date.setHours(0, 0, 0, 0)
+      const key = date.toISOString().split('T')[0]
+      const minutes = Math.floor((session.focusTime || 0) / 60000)
+      focusTimePerDay.set(key, (focusTimePerDay.get(key) || 0) + minutes)
+    })
+
+    // Find max time for scaling
+    let maxTime = 0
+    focusTimePerDay.forEach(time => {
+      if (time > maxTime) maxTime = time
+    })
+
+    // Generate grid data (weeks as columns, days as rows)
+    const grid: { date: Date; minutes: number; level: number }[][] = []
+    const currentDate = new Date(startDate)
+
+    for (let week = 0; week < weeks; week++) {
+      const weekData: { date: Date; minutes: number; level: number }[] = []
+      for (let day = 0; day < 7; day++) {
+        const dateKey = currentDate.toISOString().split('T')[0]
+        const minutes = focusTimePerDay.get(dateKey) || 0
+        let level = 0
+        if (minutes > 0 && maxTime > 0) {
+          level = Math.min(4, Math.ceil((minutes / maxTime) * 4))
+        }
+        weekData.push({ date: new Date(currentDate), minutes, level })
+        currentDate.setDate(currentDate.getDate() + 1)
+      }
+      grid.push(weekData)
+    }
+
+    // Get month labels
+    const months: { label: string; weekIndex: number }[] = []
+    let lastMonth = -1
+    grid.forEach((week, weekIndex) => {
+      const month = week[0].date.getMonth()
+      if (month !== lastMonth) {
+        months.push({
+          label: week[0].date.toLocaleDateString('en-US', { month: 'short' }),
+          weekIndex
+        })
+        lastMonth = month
+      }
+    })
+
+    return { grid, months }
+  }, [sessions])
+
+  const getLevelColor = (level: number): string => {
+    const opacities = [0.1, 0.3, 0.5, 0.7, 0.9]
+    return `rgba(4, 102, 200, ${opacities[level]})`
+  }
+
+  return (
+    <div className="flex flex-col gap-1">
+      {/* Month labels */}
+      <div className="flex mb-1">
+        {contributionData.months.map((month, i) => (
+          <span
+            key={i}
+            className="text-[10px] text-text-muted"
+            style={{
+              marginLeft: i === 0 ? 0 : `${(month.weekIndex - (contributionData.months[i-1]?.weekIndex || 0)) * 11 - 20}px`,
+              minWidth: '20px'
+            }}
+          >
+            {month.label}
+          </span>
+        ))}
+      </div>
+
+      {/* Grid */}
+      <div className="flex gap-[2px]">
+        {contributionData.grid.map((week, weekIndex) => (
+          <div key={weekIndex} className="flex flex-col gap-[2px]">
+            {week.map((day, dayIndex) => {
+              const hours = Math.floor(day.minutes / 60)
+              const mins = day.minutes % 60
+              const timeStr = hours > 0 ? `${hours}h ${mins}m` : `${mins}m`
+              return (
+                <div
+                  key={dayIndex}
+                  className="w-[8px] h-[8px] rounded-[2px]"
+                  style={{ backgroundColor: getLevelColor(day.level) }}
+                  title={`${day.date.toLocaleDateString()}: ${timeStr}`}
+                />
+              )
+            })}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 const Home = ({ sessions, tags, onStartSession }: HomeProps) => {
   const { user } = useAuth()
   const today = new Date()
@@ -117,17 +227,27 @@ const Home = ({ sessions, tags, onStartSession }: HomeProps) => {
       <div className="bg-white rounded-lg p-3 sm:p-5 shadow-md mb-3 sm:mb-4 transition-all duration-300 hover:shadow-card-hover bg-gradient-to-br from-white to-cream animate-slideUp">
         <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-5">
           <DonutChart
-            data={[{ value: todayStats.focusMinutes, color: '#ef5f33' }]}
+            data={[{ value: todayStats.focusMinutes, color: '#0466c8' }]}
             size={80}
             strokeWidth={12}
           />
-          <div className="flex-1">
+          <div>
             <p className="text-sm text-text-muted mb-1">today</p>
             <p className="text-xl text-text-dark">
-              <strong className="sans-bold">{todayStats.focusMinutes}m</strong>
+              <strong className="sans-bold">
+                {todayStats.focusMinutes >= 60
+                  ? `${Math.floor(todayStats.focusMinutes / 60)}h ${todayStats.focusMinutes % 60}m`
+                  : `${todayStats.focusMinutes}m`}
+              </strong>
             </p>
           </div>
+          {/* Contribution graph - right aligned */}
+          <div className="ml-auto">
+            <ContributionGraph sessions={sessions} />
+          </div>
         </div>
+
+        {/* Weekly day indicators */}
         <div className="flex justify-between gap-2">
           {weekDays.map((day, i) => (
             <div

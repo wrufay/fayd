@@ -74,7 +74,7 @@ const ActiveSession = ({ session, onUpdateSession, onEndSession, onDiscard }: Ac
   }, [session, elapsed, isPaused])
 
   const formatTime = useCallback((ms: number): FormattedTime => {
-    const totalSeconds = Math.floor(ms / 1000)
+    const totalSeconds = Math.floor(Math.max(0, ms) / 1000)
     const hours = Math.floor(totalSeconds / 3600)
     const minutes = Math.floor((totalSeconds % 3600) / 60)
     const seconds = totalSeconds % 60
@@ -86,7 +86,13 @@ const ActiveSession = ({ session, onUpdateSession, onEndSession, onDiscard }: Ac
     }
   }, [])
 
-  const time = formatTime(elapsed)
+  // For countdown mode, calculate remaining time
+  const isCountdown = session?.timerMode === 'countdown'
+  const countdownTotal = (session?.countdownMinutes || 0) * 60 * 1000
+  const remaining = countdownTotal - elapsed
+  const displayTime = isCountdown ? remaining : elapsed
+  const time = formatTime(displayTime)
+  const isTimeUp = isCountdown && remaining <= 0
 
   const handlePause = () => {
     setIsPaused(!isPaused)
@@ -123,17 +129,26 @@ const ActiveSession = ({ session, onUpdateSession, onEndSession, onDiscard }: Ac
           <TagIcon color={session.tag.color} className="w-[18px] h-[18px]" />
           <span>{session.tag.name}</span>
         </div>
-        <StopwatchIcon className="w-5 h-5 text-text-muted" />
+        {isCountdown ? (
+          <span className="coding-regular text-xs text-text-muted">{session.countdownMinutes}m</span>
+        ) : (
+          <StopwatchIcon className="w-5 h-5 text-text-muted" />
+        )}
       </header>
 
       <div className="flex-1 flex flex-col items-center justify-center animate-scaleIn">
-        <p className="coding-bold text-xs sm:text-sm tracking-[2px] text-text-muted mb-3 sm:mb-4">FOCUSED</p>
-        <div className="coding-regular text-4xl sm:text-[56px] text-text-muted tracking-[2px] flex items-center">
+        <p className="coding-bold text-xs sm:text-sm tracking-[2px] text-text-muted mb-3 sm:mb-4">
+          {isCountdown ? (isTimeUp ? 'TIME UP' : 'REMAINING') : 'FOCUSED'}
+        </p>
+        <div className={cn(
+          "coding-regular text-4xl sm:text-[56px] tracking-[2px] flex items-center",
+          isTimeUp ? "text-accent-red" : "text-text-muted"
+        )}>
           <span>{time.hours}</span>
           <span className="mx-1">:</span>
           <span>{time.minutes}</span>
           <span className="mx-1">:</span>
-          <span className="text-text-dark">{time.seconds}</span>
+          <span className={isTimeUp ? "text-accent-red" : "text-text-dark"}>{time.seconds}</span>
         </div>
       </div>
 
@@ -154,10 +169,7 @@ const ActiveSession = ({ session, onUpdateSession, onEndSession, onDiscard }: Ac
           style={{ animationDelay: '0.2s' }}
           onClick={handlePause}
         >
-          <span className={cn(
-            "p-3 sm:p-4 rounded-full border-2 border-accent-orange bg-accent-orange/10 text-accent-orange [&_svg]:w-6 [&_svg]:h-6 sm:[&_svg]:w-7 sm:[&_svg]:h-7 transition-all duration-200",
-            isPaused ? "bg-accent-orange text-white" : "hover:bg-accent-orange hover:text-white"
-          )}>
+          <span className="p-3 sm:p-4 rounded-full border-2 border-accent-orange bg-accent-orange/10 text-accent-orange [&_svg]:w-6 [&_svg]:h-6 sm:[&_svg]:w-7 sm:[&_svg]:h-7 transition-all duration-200">
             {isPaused ? <PlayIcon /> : <PauseIcon />}
           </span>
           <span className="coding-regular text-sm">{isPaused ? 'Resume' : 'Pause'}</span>
