@@ -202,7 +202,7 @@ const Stats = ({ sessions, tags, onDeleteSession, onDeleteTag, onUpdateTag, onAd
       <div className="p-3 sm:p-5 relative z-[1] animate-fadeIn">
         <div className="flex justify-between items-center mb-4">
           <button
-            className="flex items-center gap-2 py-2.5 px-4 bg-none border-none rounded-sm coding-regular text-sm text-primary-blue cursor-pointer transition-all duration-200 hover:underline"
+            className="flex items-center gap-2 py-2.5 px-4 bg-none border-none rounded-sm coding-regular text-sm text-primary-blue cursor-pointer transition-all duration-200 hover:opacity-70"
             onClick={() => setShowCalendar(true)}
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
@@ -215,7 +215,7 @@ const Stats = ({ sessions, tags, onDeleteSession, onDeleteTag, onUpdateTag, onAd
           </button>
           <div className="relative">
             <button
-              className="flex items-center gap-2 py-2.5 px-4 bg-none border-none rounded-sm coding-regular text-sm text-primary-blue cursor-pointer transition-all duration-200 hover:underline"
+              className="flex items-center gap-2 py-2.5 px-4 bg-none border-none rounded-sm coding-regular text-sm text-primary-blue cursor-pointer transition-all duration-200 hover:opacity-70"
               onClick={() => setShowTagDropdown(!showTagDropdown)}
             >
               <TagIcon className="w-4 h-4" />
@@ -359,57 +359,64 @@ const Stats = ({ sessions, tags, onDeleteSession, onDeleteTag, onUpdateTag, onAd
       {/* Manage Tasks Modal */}
       {showManageTasks && (
         <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-[1000] animate-fadeIn backdrop-blur-[2px]" onClick={() => { setShowManageTasks(false); cancelEditTag(); }}>
-          <div className="bg-white rounded-lg w-[90%] max-w-[340px] max-h-[80%] overflow-hidden animate-modal shadow-dropdown" onClick={(e: MouseEvent) => e.stopPropagation()}>
-            <div className="flex items-center justify-between p-5 border-b border-primary-blue-light">
-              <h2 className="sans-bold text-lg">Manage Tasks</h2>
+          <div className="bg-cream rounded-2xl w-[90%] max-w-[340px] max-h-[80%] overflow-hidden animate-modal shadow-dropdown" onClick={(e: MouseEvent) => e.stopPropagation()}>
+            <div className="flex items-center justify-between p-5 bg-white rounded-t-2xl">
+              <h2 className="serif-bold text-xl">
+                <span className="serif-regular italic">manage</span> tasks
+              </h2>
               <button
-                className="w-8 h-8 flex items-center justify-center bg-transparent border-none cursor-pointer text-text-muted rounded-lg transition-all duration-200 hover:bg-primary-blue-light hover:text-text-dark [&_svg]:w-5 [&_svg]:h-5"
+                className="w-8 h-8 flex items-center justify-center bg-transparent border-none cursor-pointer text-text-muted rounded-lg transition-all duration-200 hover:text-text-dark [&_svg]:w-5 [&_svg]:h-5"
                 onClick={() => { setShowManageTasks(false); cancelEditTag(); }}
               >
                 <CloseIcon />
               </button>
             </div>
             <div className="p-5 overflow-y-auto max-h-[400px]">
-              <div className="mb-5">
+              <div className="bg-white rounded-xl p-4 mb-4">
+                <p className="serif-regular italic text-text-muted text-sm mb-3">add a new task</p>
                 <input
                   type="text"
-                  placeholder="New tag name"
+                  placeholder="tag name"
                   value={newTagName}
                   onChange={(e: ChangeEvent<HTMLInputElement>) => setNewTagName(e.target.value)}
                   onKeyPress={(e: KeyboardEvent<HTMLInputElement>) => e.key === 'Enter' && handleAddTag()}
-                  className="w-full py-3 px-4 border-2 border-primary-blue-light rounded-sm text-sm coding-regular outline-none mb-3 transition-colors focus:border-primary-blue"
+                  className="w-full py-2.5 px-3 border border-text-muted/20 rounded-lg text-sm sans-regular outline-none mb-3 transition-colors focus:border-primary-blue/40 bg-cream"
                 />
-                <div className="flex gap-2 mb-3">
+                <div className="flex gap-2 mb-4">
                   {colors.map(color => (
                     <button
                       key={color}
                       className={cn(
-                        "w-7 h-7 rounded-full border-[3px] border-transparent cursor-pointer transition-all duration-200 hover:scale-[1.15]",
-                        newTagColor === color && "border-text-dark scale-110"
+                        "w-7 h-7 rounded-full border-[3px] border-transparent cursor-pointer transition-all duration-200 hover:scale-110",
+                        newTagColor === color && "border-text-dark/30 scale-110"
                       )}
                       style={{ background: color }}
                       onClick={() => setNewTagColor(color)}
                     />
                   ))}
                 </div>
-                <button className="inline-flex items-center justify-center gap-2 py-3 px-6 rounded-full coding-regular text-sm border-[1.5px] cursor-pointer transition-all duration-300 bg-crimson border-crimson text-white hover:bg-primary-dark hover:border-primary-dark hover:-translate-y-px hover:shadow-button active:translate-y-0 w-full [&_svg]:w-4 [&_svg]:h-4" onClick={handleAddTag}>
-                  <PlusIcon /> Add Tag
+                <button
+                  className="inline-flex items-center justify-center gap-2 py-2.5 px-5 rounded-full coding-regular text-xs border-[1.5px] cursor-pointer transition-all duration-300 bg-primary-blue/70 border-primary-blue/70 text-white hover:bg-primary-blue hover:border-primary-blue hover:-translate-y-px active:translate-y-0 w-full [&_svg]:w-4 [&_svg]:h-4"
+                  onClick={handleAddTag}
+                >
+                  <PlusIcon /> add tag
                 </button>
               </div>
 
+              <p className="serif-regular italic text-text-muted text-sm mb-3">your tasks</p>
               <div className="flex flex-col gap-2">
                 {tags.map(tag => (
-                  <div key={tag.id} className="bg-background rounded-sm transition-all duration-200">
+                  <div key={tag.id} className="bg-white rounded-xl transition-all duration-200">
                     {editingTagId === tag.id ? (
                       // Edit mode
-                      <div className="p-3 animate-fadeIn">
+                      <div className="p-4 animate-fadeIn">
                         <input
                           type="text"
                           value={editTagName}
                           onChange={(e: ChangeEvent<HTMLInputElement>) => setEditTagName(e.target.value)}
                           onKeyPress={(e: KeyboardEvent<HTMLInputElement>) => e.key === 'Enter' && saveEditTag()}
                           autoFocus
-                          className="w-full py-2 px-3 border-2 border-primary-blue-light rounded-sm text-sm coding-regular outline-none mb-2 transition-colors focus:border-primary-blue"
+                          className="w-full py-2 px-3 border border-text-muted/20 rounded-lg text-sm sans-regular outline-none mb-3 transition-colors focus:border-primary-blue/40 bg-cream"
                         />
                         <div className="flex items-center justify-between">
                           <div className="flex gap-2">
@@ -418,7 +425,7 @@ const Stats = ({ sessions, tags, onDeleteSession, onDeleteTag, onUpdateTag, onAd
                                 key={color}
                                 className={cn(
                                   "w-6 h-6 rounded-full border-[3px] border-transparent cursor-pointer transition-all duration-200 hover:scale-110",
-                                  editTagColor === color && "border-text-dark scale-110"
+                                  editTagColor === color && "border-text-dark/30 scale-110"
                                 )}
                                 style={{ background: color }}
                                 onClick={() => setEditTagColor(color)}
@@ -427,34 +434,34 @@ const Stats = ({ sessions, tags, onDeleteSession, onDeleteTag, onUpdateTag, onAd
                           </div>
                           <div className="flex gap-2">
                             <button
-                              className="px-3 py-1.5 bg-transparent border border-cream-dark rounded-sm coding-regular text-xs text-text-muted cursor-pointer hover:bg-cream-dark transition-colors"
+                              className="px-3 py-1.5 bg-transparent border border-text-muted/20 rounded-full coding-regular text-xs text-text-muted cursor-pointer hover:border-text-muted/40 transition-colors"
                               onClick={cancelEditTag}
                             >
-                              Cancel
+                              cancel
                             </button>
                             <button
-                              className="px-3 py-1.5 bg-primary-blue border-none rounded-sm coding-regular text-xs text-white cursor-pointer hover:bg-primary-blue/90 transition-colors"
+                              className="px-3 py-1.5 bg-primary-blue/70 border-none rounded-full coding-regular text-xs text-white cursor-pointer hover:bg-primary-blue transition-colors"
                               onClick={saveEditTag}
                             >
-                              Save
+                              save
                             </button>
                           </div>
                         </div>
                       </div>
                     ) : (
                       // View mode
-                      <div className="flex items-center gap-3 py-3 px-4 hover:bg-primary-blue-light">
+                      <div className="flex items-center gap-3 py-3 px-4">
                         <span className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: tag.color }} />
                         <span className="flex-1 sans-regular text-sm">{tag.name}</span>
                         <button
-                          className="w-7 h-7 flex items-center justify-center bg-transparent border-none cursor-pointer text-text-muted rounded-md transition-all duration-200 hover:bg-primary-blue-light hover:text-primary-blue [&_svg]:w-4 [&_svg]:h-4"
+                          className="w-8 h-8 flex items-center justify-center bg-transparent border-none cursor-pointer text-text-muted/40 rounded-md transition-all duration-200 hover:text-primary-blue [&_svg]:w-4 [&_svg]:h-4"
                           onClick={() => startEditTag(tag)}
                         >
                           <EditIcon />
                         </button>
                         {onDeleteTag && (
                           <button
-                            className="w-7 h-7 flex items-center justify-center bg-transparent border-none cursor-pointer text-text-muted rounded-md transition-all duration-200 hover:bg-accent-red/10 hover:text-accent-red [&_svg]:w-4 [&_svg]:h-4"
+                            className="w-8 h-8 flex items-center justify-center bg-transparent border-none cursor-pointer text-text-muted/40 rounded-md transition-all duration-200 hover:text-accent-red [&_svg]:w-4 [&_svg]:h-4"
                             onClick={() => onDeleteTag(tag.id)}
                           >
                             <TrashIcon />

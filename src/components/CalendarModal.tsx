@@ -170,15 +170,6 @@ const CalendarModal = ({ isOpen, onClose, sessions, onAddMissedTime }: CalendarM
     )
   }
 
-  const isSelected = (day: number | null): boolean => {
-    if (!day) return false
-    return (
-      currentDate.getFullYear() === selectedDate.getFullYear() &&
-      currentDate.getMonth() === selectedDate.getMonth() &&
-      day === selectedDate.getDate()
-    )
-  }
-
   if (!isOpen) return null
 
   const monthName = currentDate.toLocaleDateString('en-US', { month: 'long' })
@@ -218,11 +209,10 @@ const CalendarModal = ({ isOpen, onClose, sessions, onAddMissedTime }: CalendarM
                   <button
                     key={i}
                     className={cn(
-                      "aspect-square flex items-center justify-center border-none sans-regular text-base text-text-dark cursor-pointer rounded-full transition-all duration-200",
+                      "aspect-square flex items-center justify-center sans-regular text-base text-text-dark cursor-pointer rounded-full transition-all duration-200",
                       !day && "cursor-default",
                       hasSession && "bg-primary-blue-light text-primary-blue",
-                      isToday(day) && "border-2 border-primary-blue",
-                      isSelected(day) && "shadow-[0_0_0_3px_rgba(4,102,200,0.3)]"
+                      isToday(day) ? "border border-primary-blue/40" : "border border-transparent"
                     )}
                     onClick={() => handleDayClick(day)}
                     disabled={!day}
