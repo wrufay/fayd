@@ -45,29 +45,6 @@ const CalendarModal = ({ isOpen, onClose, sessions, onAddMissedTime }: CalendarM
     return d
   }, [])
 
-  // Calculate streak
-  const streak = useMemo(() => {
-    let count = 0
-    const dayMs = 24 * 60 * 60 * 1000
-    let checkDate = new Date()
-    checkDate.setHours(0, 0, 0, 0)
-
-    for (let i = 0; i < 365; i++) {
-      const dayStart = checkDate.getTime()
-      const dayEnd = dayStart + dayMs
-      const hasSession = sessions.some(s => s.startTime >= dayStart && s.startTime < dayEnd)
-
-      if (hasSession) {
-        count++
-        checkDate = new Date(checkDate.getTime() - dayMs)
-      } else if (i === 0) {
-        checkDate = new Date(checkDate.getTime() - dayMs)
-      } else {
-        break
-      }
-    }
-    return count
-  }, [sessions])
 
   // Get days with sessions for current month
   const daysWithSessions = useMemo(() => {
@@ -216,13 +193,6 @@ const CalendarModal = ({ isOpen, onClose, sessions, onAddMissedTime }: CalendarM
         </div>
 
         <div className="p-5">
-          {/* Streak */}
-          <div className="flex items-center justify-center gap-3 mb-6">
-            <span className="flex-1 h-px bg-gradient-to-r from-transparent via-text-muted to-transparent opacity-30"></span>
-            <span className="sans-regular text-sm text-text-dark whitespace-nowrap">You're on a {streak} day streak!</span>
-            <span className="flex-1 h-px bg-gradient-to-r from-transparent via-text-muted to-transparent opacity-30"></span>
-          </div>
-
           {/* Month Navigation */}
           <div className="flex items-center justify-center gap-6 mb-5">
             <button className="bg-transparent border-none cursor-pointer p-2 text-primary-blue hover:scale-110 transition-transform [&_svg]:w-6 [&_svg]:h-6" onClick={prevMonth}>
@@ -272,7 +242,7 @@ const CalendarModal = ({ isOpen, onClose, sessions, onAddMissedTime }: CalendarM
                 <p className="sans-regular text-xs text-text-muted tracking-[0.5px]">TOTAL TIME: {formatDuration(selectedDateTotal)}</p>
               </div>
               <button
-                className="w-10 h-10 rounded-full border-2 border-primary-blue bg-transparent text-primary-blue cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-primary-blue hover:text-white [&_svg]:w-5 [&_svg]:h-5"
+                className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer border border-dashed border-text-muted/20 bg-transparent text-text-muted/50 hover:border-text-muted/40 hover:text-text-muted [&_svg]:w-5 [&_svg]:h-5"
                 onClick={() => onAddMissedTime(selectedDate)}
               >
                 <PlusIcon />

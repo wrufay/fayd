@@ -8,14 +8,14 @@ const Navigation = () => {
   const activeView = location.pathname === '/stats' ? 'stats' : 'home'
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-[100] bg-white border-t border-border">
-      {/* Quick Links - Only show on home */}
+    <div className="fixed bottom-0 left-0 right-0 z-[100]">
+      {/* Quick Links - Only show on home, floating without background */}
       {activeView === 'home' && (
-        <QuickLinksWidget className="py-3 border-b border-border/50" />
+        <QuickLinksWidget className="py-3" />
       )}
 
-      {/* Navigation */}
-      <nav className="flex justify-around py-2 sm:py-3 px-3 sm:px-5">
+      {/* Navigation - with white background */}
+      <nav className="flex justify-around py-2 sm:py-3 px-3 sm:px-5 bg-white border-t border-border">
         <Link
           to="/"
           className={cn(

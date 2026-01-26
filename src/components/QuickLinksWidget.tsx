@@ -263,7 +263,7 @@ const QuickLinksWidget = ({ className }: QuickLinksWidgetProps) => {
 
           {quickLinks.length < 5 && (
             <button
-              className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer border-2 border-dashed border-text-muted/30 bg-transparent text-text-muted hover:border-text-muted/50 hover:text-text-dark"
+              className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer border border-dashed border-text-muted/20 bg-transparent text-text-muted/50 hover:border-text-muted/40 hover:text-text-muted"
               onClick={handleOpenModal}
             >
               <PlusIcon className="w-5 h-5" />

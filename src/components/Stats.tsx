@@ -1,4 +1,4 @@
-import { useState, useMemo, ChangeEvent, KeyboardEvent, MouseEvent } from 'react'
+import { useState, useMemo, useEffect, useRef, ChangeEvent, KeyboardEvent, MouseEvent } from 'react'
 import DonutChart from './DonutChart'
 import CalendarModal from './CalendarModal'
 import AddMissedTime from './AddMissedTime'
@@ -63,6 +63,14 @@ const Stats = ({ sessions, tags, onDeleteSession, onDeleteTag, onUpdateTag, onAd
   const [showCalendar, setShowCalendar] = useState<boolean>(false)
   const [showAddMissedTime, setShowAddMissedTime] = useState<boolean>(false)
   const [missedTimeDate, setMissedTimeDate] = useState<Date>(new Date())
+  const addMissedTimeRef = useRef<HTMLDivElement>(null)
+
+  // Scroll to AddMissedTime modal when opened
+  useEffect(() => {
+    if (showAddMissedTime && addMissedTimeRef.current) {
+      addMissedTimeRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
+  }, [showAddMissedTime])
   const [newTagName, setNewTagName] = useState<string>('')
   const [newTagColor, setNewTagColor] = useState<string>('#ef5f33')
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
@@ -300,7 +308,7 @@ const Stats = ({ sessions, tags, onDeleteSession, onDeleteTag, onUpdateTag, onAd
               <span className="text-xs text-text-muted tracking-[1px]">{dateLabel}</span>
             </div>
             <button
-              className="w-10 h-10 rounded-full border-2 border-primary-blue bg-transparent text-primary-blue cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-primary-blue hover:text-white [&_svg]:w-5 [&_svg]:h-5"
+              className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer border border-dashed border-text-muted/20 bg-transparent text-text-muted/50 hover:border-text-muted/40 hover:text-text-muted [&_svg]:w-5 [&_svg]:h-5"
               onClick={() => {
                 setMissedTimeDate(new Date())
                 setShowAddMissedTime(true)
@@ -477,7 +485,7 @@ const Stats = ({ sessions, tags, onDeleteSession, onDeleteTag, onUpdateTag, onAd
       {/* Add Missed Time Modal */}
       {showAddMissedTime && (
         <div className="modal-overlay" onClick={() => setShowAddMissedTime(false)}>
-          <div className="modal max-h-[90%] overflow-y-auto" onClick={(e: MouseEvent) => e.stopPropagation()}>
+          <div ref={addMissedTimeRef} className="modal max-h-[90%] overflow-y-auto" onClick={(e: MouseEvent) => e.stopPropagation()}>
             <AddMissedTime
               tags={tags}
               onClose={() => setShowAddMissedTime(false)}

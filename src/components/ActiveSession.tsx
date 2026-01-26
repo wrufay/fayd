@@ -177,7 +177,7 @@ const ActiveSession = ({ session, onUpdateSession, onEndSession, onDiscard }: Ac
       </div>
 
       {/* Study Stack - Fixed at bottom */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-border z-[100]">
+      <div className="fixed bottom-0 left-0 right-0 z-[100]">
         <QuickLinksWidget className="py-3" />
       </div>
 
