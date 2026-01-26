@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect, useRef, ChangeEvent, KeyboardEvent, Mouse
 import DonutChart from './DonutChart'
 import CalendarModal from './CalendarModal'
 import AddMissedTime from './AddMissedTime'
-import { TagIcon, CloseIcon, PlusIcon } from './Icons'
+import { CloseIcon, PlusIcon } from './Icons'
 import { useAuth } from '../context/AuthContext'
 import { cn } from '../lib/utils'
 import type { Session, Tag, ChartDataItem } from '../types'
@@ -79,6 +79,9 @@ const Stats = ({ sessions, tags, onDeleteSession, onDeleteTag, onUpdateTag, onAd
   const [editingTagId, setEditingTagId] = useState<string | null>(null)
   const [editTagName, setEditTagName] = useState<string>('')
   const [editTagColor, setEditTagColor] = useState<string>('')
+  // Delete tag state
+  const [showDeleteTagModal, setShowDeleteTagModal] = useState<boolean>(false)
+  const [tagToDelete, setTagToDelete] = useState<string | null>(null)
 
   const colors = ['#ef5f33', '#0466c8', '#f1c40f']
 
@@ -218,7 +221,6 @@ const Stats = ({ sessions, tags, onDeleteSession, onDeleteTag, onUpdateTag, onAd
               className="flex items-center gap-2 py-2.5 px-4 bg-none border-none rounded-sm coding-regular text-sm text-primary-blue cursor-pointer transition-all duration-200 hover:opacity-70"
               onClick={() => setShowTagDropdown(!showTagDropdown)}
             >
-              <TagIcon className="w-4 h-4" />
               <span>{selectedTag ? tags.find(t => t.id === selectedTag)?.name : 'All tasks'}</span>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 ml-1">
                 <polyline points="6,9 12,15 18,9" />
@@ -278,7 +280,7 @@ const Stats = ({ sessions, tags, onDeleteSession, onDeleteTag, onUpdateTag, onAd
           <p className="text-xs text-text-muted tracking-[1px] mb-4 sm:mb-5">{dateLabel}</p>
 
           <div className="flex items-center justify-center gap-4 sm:gap-6 mb-4 sm:mb-5">
-            <DonutChart data={taskDistribution} size={100} strokeWidth={16} />
+            <DonutChart data={taskDistribution} size={90} strokeWidth={14} />
             <div className="text-left">
               <p className="sans-bold text-base sm:text-lg text-text-dark mb-2 sm:mb-3">{formatDuration(totalTime)} total</p>
               <div className="flex flex-col gap-2">
@@ -293,10 +295,9 @@ const Stats = ({ sessions, tags, onDeleteSession, onDeleteTag, onUpdateTag, onAd
           </div>
 
           <button
-            className="flex items-center justify-center gap-2 w-full py-3 bg-transparent border-none border-t border-primary-blue-light mt-4 pt-4 sans-bold text-xs tracking-[1px] text-primary-blue cursor-pointer hover:underline"
+            className="flex items-center justify-center gap-2 w-full py-3 bg-transparent border-none border-t border-primary-blue-light mt-4 pt-4 sans-bold text-xs tracking-[1px] text-primary-blue cursor-pointer"
             onClick={() => setShowManageTasks(true)}
           >
-            <TagIcon className="w-4 h-4" />
             MANAGE TASKS
           </button>
         </div>
@@ -334,7 +335,7 @@ const Stats = ({ sessions, tags, onDeleteSession, onDeleteTag, onUpdateTag, onAd
                       {formatDate(session.startTime)} {formatTime(session.startTime)}-{formatTime(session.endTime!)}
                     </span>
                     <div className="flex items-center gap-2 sans-regular text-sm">
-                      <TagIcon color={session.tag.color} className="w-4 h-4" />
+                      <span className="w-3 h-3 rounded-full" style={{ backgroundColor: session.tag.color }} />
                       <span>{session.tag.name}</span>
                       <span className="text-text-muted font-normal">• {formatDuration(session.focusTime)}</span>
                     </div>
@@ -459,20 +460,54 @@ const Stats = ({ sessions, tags, onDeleteSession, onDeleteTag, onUpdateTag, onAd
                         >
                           <EditIcon />
                         </button>
-                        {onDeleteTag && (
-                          <button
-                            className="w-8 h-8 flex items-center justify-center bg-transparent border-none cursor-pointer text-text-muted/40 rounded-md transition-all duration-200 hover:text-accent-red [&_svg]:w-4 [&_svg]:h-4"
-                            onClick={() => onDeleteTag(tag.id)}
-                          >
-                            <TrashIcon />
-                          </button>
-                        )}
+                        <button
+                          className="w-8 h-8 flex items-center justify-center bg-transparent border-none cursor-pointer text-text-muted/40 rounded-md transition-all duration-200 hover:text-accent-red [&_svg]:w-4 [&_svg]:h-4"
+                          onClick={() => {
+                            setTagToDelete(tag.id)
+                            setShowDeleteTagModal(true)
+                          }}
+                        >
+                          <TrashIcon />
+                        </button>
                       </div>
                     )}
                   </div>
                 ))}
               </div>
             </div>
+
+            {/* Delete Tag Confirmation Modal */}
+            {showDeleteTagModal && (
+              <div className="fixed inset-0 bg-black/50 z-[1100] flex items-center justify-center animate-fadeIn" onClick={() => setShowDeleteTagModal(false)}>
+                <div className="bg-white rounded-[20px] w-[300px] p-6 animate-scaleIn" onClick={(e: MouseEvent) => e.stopPropagation()}>
+                  <div className="flex flex-col items-center">
+                    <h3 className="sans-bold text-xl text-text-dark mb-2">Delete this task?</h3>
+                    <p className="sans-regular text-sm text-text-muted mb-6">This can't be undone.</p>
+
+                    <div className="flex items-center justify-center gap-8 w-full">
+                      <button
+                        className="bg-transparent border-none coding-bold text-sm tracking-[1px] text-primary-blue cursor-pointer hover:underline"
+                        onClick={() => setShowDeleteTagModal(false)}
+                      >
+                        CANCEL
+                      </button>
+                      <button
+                        className="bg-transparent border-none coding-bold text-sm tracking-[1px] text-primary-blue cursor-pointer hover:underline"
+                        onClick={() => {
+                          if (tagToDelete && onDeleteTag) {
+                            onDeleteTag(tagToDelete)
+                          }
+                          setShowDeleteTagModal(false)
+                          setTagToDelete(null)
+                        }}
+                      >
+                        YES, DELETE
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -487,6 +522,7 @@ const Stats = ({ sessions, tags, onDeleteSession, onDeleteTag, onUpdateTag, onAd
           setMissedTimeDate(date)
           setShowAddMissedTime(true)
         }}
+        onDeleteSession={onDeleteSession}
       />
 
       {/* Add Missed Time Modal */}

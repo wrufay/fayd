@@ -1,5 +1,5 @@
 import { useState, ChangeEvent } from 'react'
-import { CloseIcon, ClockIcon, StopwatchIcon, TagIcon, PlusIcon, PlayIcon } from './Icons'
+import { CloseIcon, ClockIcon, StopwatchIcon, PlusIcon, PlayIcon } from './Icons'
 import { cn } from '../lib/utils'
 import type { Tag } from '../types'
 
@@ -116,7 +116,7 @@ const StartSession = ({
                 onClick={() => onSelectTag(tag)}
                 style={{ borderColor: selectedTag?.id === tag.id ? tag.color : undefined }}
               >
-                <TagIcon className="w-4 h-4" color={tag.color} />
+                <span className="w-3 h-3 rounded-full" style={{ backgroundColor: tag.color }} />
                 <span>{tag.name}</span>
               </button>
             ))}

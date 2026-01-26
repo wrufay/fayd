@@ -1,5 +1,5 @@
 import { useState, useMemo, ChangeEvent } from 'react'
-import { CloseIcon, TagIcon, PlusIcon } from './Icons'
+import { CloseIcon, PlusIcon } from './Icons'
 import { cn } from '../lib/utils'
 import type { Tag, Session } from '../types'
 
@@ -126,7 +126,7 @@ const AddMissedTime = ({
                 onClick={() => setSelectedTag(tag)}
                 style={{ borderColor: selectedTag?.id === tag.id ? tag.color : undefined }}
               >
-                <TagIcon className="w-4 h-4" color={tag.color} />
+                <span className="w-3 h-3 rounded-full" style={{ backgroundColor: tag.color }} />
                 <span>{tag.name}</span>
               </button>
             ))}

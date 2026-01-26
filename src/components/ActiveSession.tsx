@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { TagIcon, StopwatchIcon, StopIcon, PauseIcon, PlayIcon, CloseIcon } from './Icons'
+import { StopwatchIcon, StopIcon, PauseIcon, PlayIcon, CloseIcon } from './Icons'
 import { cn } from '../lib/utils'
 import { storage } from '../lib/platform'
 import QuickLinksWidget from './QuickLinksWidget'
@@ -26,7 +26,7 @@ interface FormattedTime {
   seconds: string
 }
 
-const ActiveSession = ({ session, onUpdateSession, onEndSession, onDiscard }: ActiveSessionProps) => {
+const ActiveSession = ({ session, onEndSession, onDiscard }: ActiveSessionProps) => {
   const [showFinishModal, setShowFinishModal] = useState<boolean>(false)
   const [elapsed, setElapsed] = useState<number>(() => {
     if (!session) return 0
@@ -125,10 +125,7 @@ const ActiveSession = ({ session, onUpdateSession, onEndSession, onDiscard }: Ac
   return (
     <div className="min-h-extension flex flex-col p-3 sm:p-5 animate-fadeIn">
       <header className="flex items-center justify-center gap-4 bg-primary-blue-light rounded-full px-4 sm:px-6 py-2 sm:py-3 mb-6 sm:mb-10 animate-slideDown mx-auto">
-        <div className="flex items-center gap-2 serif-regular text-sm text-primary-blue">
-          <TagIcon color={session.tag.color} className="w-[18px] h-[18px]" />
-          <span>{session.tag.name}</span>
-        </div>
+        <span className="serif-regular text-sm text-primary-blue">{session.tag.name}</span>
         {isCountdown ? (
           <span className="coding-regular text-xs text-text-muted">{session.countdownMinutes}m</span>
         ) : (

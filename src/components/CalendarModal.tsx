@@ -16,14 +16,12 @@ const ChevronRight = () => (
   </svg>
 )
 
-interface TagIconProps {
-  color?: string
-}
-
-const TagIcon = ({ color }: TagIconProps) => (
-  <svg viewBox="0 0 24 24" fill={color || 'currentColor'} className="w-4 h-4">
-    <path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z" />
-    <line x1="7" y1="7" x2="7.01" y2="7" stroke="white" strokeWidth="2" />
+const TrashIcon = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <polyline points="3,6 5,6 21,6" />
+    <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
+    <line x1="10" y1="11" x2="10" y2="17" />
+    <line x1="14" y1="11" x2="14" y2="17" />
   </svg>
 )
 
@@ -32,12 +30,15 @@ interface CalendarModalProps {
   onClose: () => void
   sessions: Session[]
   onAddMissedTime: (date: Date) => void
+  onDeleteSession?: (sessionId: string) => void
 }
 
-const CalendarModal = ({ isOpen, onClose, sessions, onAddMissedTime }: CalendarModalProps) => {
+const CalendarModal = ({ isOpen, onClose, sessions, onAddMissedTime, onDeleteSession }: CalendarModalProps) => {
   const [currentDate, setCurrentDate] = useState<Date>(new Date())
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
   const [showSessions, setShowSessions] = useState<boolean>(false)
+  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false)
+  const [sessionToDelete, setSessionToDelete] = useState<string | null>(null)
 
   const today = useMemo(() => {
     const d = new Date()
@@ -175,6 +176,7 @@ const CalendarModal = ({ isOpen, onClose, sessions, onAddMissedTime }: CalendarM
   const monthName = currentDate.toLocaleDateString('en-US', { month: 'long' })
 
   return (
+    <>
     <div className="fixed inset-0 bg-black/50 z-[200] flex items-center justify-center animate-fadeIn p-4" onClick={onClose}>
       <div className="w-extension max-h-[90vh] bg-cream overflow-y-auto animate-slideUp rounded-2xl" onClick={(e: MouseEvent) => e.stopPropagation()}>
         <div className="flex justify-between items-center px-5 py-4 bg-white rounded-t-2xl">
@@ -270,17 +272,29 @@ const CalendarModal = ({ isOpen, onClose, sessions, onAddMissedTime }: CalendarM
                 {showSessions && (
                   <div className="flex flex-col gap-3 mt-3 animate-fadeIn">
                     {selectedDateSessions.map(session => (
-                      <div key={session.id} className="bg-primary-blue-light rounded-[12px] p-4 flex justify-between items-center cursor-pointer transition-transform duration-200 hover:translate-x-1">
+                      <div key={session.id} className="bg-primary-blue-light rounded-[12px] p-4 flex justify-between items-center">
                         <div className="flex-1">
                           <span className="sans-regular text-xs text-text-muted tracking-[0.3px] mb-1 block">
                             {new Date(session.startTime).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }).toUpperCase()} {formatTime(session.startTime)}-{formatTime(session.endTime!)}
                           </span>
                           <div className="flex items-center gap-2">
-                            <TagIcon color={session.tag.color} />
+                            <span className="w-3 h-3 rounded-full" style={{ backgroundColor: session.tag.color }} />
                             <span className="sans-bold text-base text-text-dark">{session.tag.name}</span>
                             <span className="sans-regular text-sm text-text-muted">• {formatDuration(session.focusTime)}</span>
                           </div>
                         </div>
+                        {onDeleteSession && (
+                          <button
+                            className="w-9 h-9 flex items-center justify-center bg-transparent border-none rounded-lg cursor-pointer text-text-muted transition-all duration-200 hover:bg-accent-red/10 hover:text-accent-red [&_svg]:w-[18px] [&_svg]:h-[18px]"
+                            onClick={(e: MouseEvent) => {
+                              e.stopPropagation()
+                              setSessionToDelete(session.id)
+                              setShowDeleteModal(true)
+                            }}
+                          >
+                            <TrashIcon />
+                          </button>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -291,6 +305,40 @@ const CalendarModal = ({ isOpen, onClose, sessions, onAddMissedTime }: CalendarM
         </div>
       </div>
     </div>
+
+    {/* Delete Confirmation Modal */}
+    {showDeleteModal && (
+      <div className="fixed inset-0 bg-black/50 z-[300] flex items-center justify-center animate-fadeIn" onClick={() => setShowDeleteModal(false)}>
+        <div className="bg-white rounded-[20px] w-[300px] p-6 animate-scaleIn" onClick={(e: MouseEvent) => e.stopPropagation()}>
+          <div className="flex flex-col items-center">
+            <h3 className="sans-bold text-xl text-text-dark mb-2">Delete this session?</h3>
+            <p className="sans-regular text-sm text-text-muted mb-6">This can't be undone.</p>
+
+            <div className="flex items-center justify-center gap-8 w-full">
+              <button
+                className="bg-transparent border-none coding-bold text-sm tracking-[1px] text-primary-blue cursor-pointer hover:underline"
+                onClick={() => setShowDeleteModal(false)}
+              >
+                CANCEL
+              </button>
+              <button
+                className="bg-transparent border-none coding-bold text-sm tracking-[1px] text-primary-blue cursor-pointer hover:underline"
+                onClick={() => {
+                  if (sessionToDelete && onDeleteSession) {
+                    onDeleteSession(sessionToDelete)
+                  }
+                  setShowDeleteModal(false)
+                  setSessionToDelete(null)
+                }}
+              >
+                YES, DELETE
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
+    </>
   )
 }
 

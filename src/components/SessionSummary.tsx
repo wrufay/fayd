@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { CloseIcon, TagIcon } from './Icons'
+import { CloseIcon } from './Icons'
 import type { Session } from '../types'
 
 const MOTIVATIONAL_MESSAGES = [
@@ -68,7 +68,7 @@ const SessionSummary = ({ session, onClose, onViewStats }: SessionSummaryProps) 
           <span className="coding-regular text-3xl sm:text-4xl text-text-dark tracking-wide">{formatTime(totalTime)}</span>
         </div>
         <div className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full sans-regular text-sm animate-scaleIn-delay">
-          <TagIcon color={session.tag.color} className="w-4 h-4" />
+          <span className="w-3 h-3 rounded-full" style={{ backgroundColor: session.tag.color }} />
           <span>{session.tag.name}</span>
         </div>
       </div>

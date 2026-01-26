@@ -127,7 +127,7 @@ const ContributionGraph = ({ sessions }: { sessions: Session[] }) => {
   )
 }
 
-const Home = ({ sessions, tags, onStartSession }: HomeProps) => {
+const Home = ({ sessions, onStartSession }: HomeProps) => {
   const { user } = useAuth()
   const today = new Date()
 
