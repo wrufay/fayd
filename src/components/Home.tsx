@@ -20,7 +20,7 @@ interface WeekDay {
 // GitHub-style contribution graph component (10 weeks)
 const ContributionGraph = ({ sessions }: { sessions: Session[] }) => {
   const contributionData = useMemo(() => {
-    const weeks = 10
+    const weeks = 8
     const today = new Date()
     today.setHours(0, 0, 0, 0)
 
