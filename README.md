@@ -10,7 +10,7 @@ A minimal focus timer to help you stay productive.
 - **Tags** to categorize your work
 - **Contribution graph** to visualize your consistency
 - **Stats** to track your progress over time
-- **Cloud sync** when signed in
+- **Cloud sync** when signed in; anyone can use locally.
 
 ## Stack
 
