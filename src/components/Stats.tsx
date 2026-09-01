@@ -275,7 +275,8 @@ const Stats = ({ sessions, tags, onDeleteSession, onDeleteTag, onUpdateTag, onAd
           ))}
         </div>
 
-        <div className="bg-white rounded-lg p-3 sm:p-5 shadow-card mb-3 sm:mb-4 transition-all duration-300 hover:shadow-card-hover text-center">
+        {/* man i do not understand why the rounded-sm is like bigger than rounded-md */}
+        <div className="bg-white rounded-md p-3 sm:p-5 shadow-md mb-3 sm:mb-4 duration-300  text-center">
           <h3 className="sans-bold text-base sm:text-lg mb-1">Task distribution</h3>
           <p className="text-xs text-text-muted tracking-[1px] mb-4 sm:mb-5">{dateLabel}</p>
 
@@ -358,10 +359,11 @@ const Stats = ({ sessions, tags, onDeleteSession, onDeleteTag, onUpdateTag, onAd
       </div>
 
       {/* Manage Tasks Modal */}
+      {/* small issue, i think we need to fix z-indices */}
       {showManageTasks && (
-        <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-[1000] animate-fadeIn backdrop-blur-[2px]" onClick={() => { setShowManageTasks(false); cancelEditTag(); }}>
+        <div className="fixed inset-0 bg-[#333]/30 flex items-center justify-center z-[1000] animate-fadeIn backdrop-blur-[2px]" onClick={() => { setShowManageTasks(false); cancelEditTag(); }}>
           <div className="bg-cream rounded-2xl w-[90%] max-w-[340px] max-h-[80%] overflow-hidden animate-modal shadow-dropdown" onClick={(e: MouseEvent) => e.stopPropagation()}>
-            <div className="flex items-center justify-between p-5 bg-white rounded-t-2xl">
+            <div className="flex items-center justify-between p-5 bg-white shadow-md">
               <h2 className="serif-bold text-xl">
                 <span className="serif-regular italic">manage</span> tasks
               </h2>
@@ -373,7 +375,7 @@ const Stats = ({ sessions, tags, onDeleteSession, onDeleteTag, onUpdateTag, onAd
               </button>
             </div>
             <div className="p-5 overflow-y-auto max-h-[400px]">
-              <div className="bg-white rounded-xl p-4 mb-4">
+              <div className="p-4 mb-4">
                 <p className="serif-regular italic text-text-muted text-sm mb-3">add a new task</p>
                 <input
                   type="text"
@@ -383,6 +385,7 @@ const Stats = ({ sessions, tags, onDeleteSession, onDeleteTag, onUpdateTag, onAd
                   onKeyPress={(e: KeyboardEvent<HTMLInputElement>) => e.key === 'Enter' && handleAddTag()}
                   className="w-full py-2.5 px-3 border border-text-muted/20 rounded-lg text-sm sans-regular outline-none mb-3 transition-colors focus:border-primary-blue/40 bg-cream"
                 />
+                <div className="flex flex-row justify-between items-center">
                 <div className="flex gap-2 mb-4">
                   {colors.map(color => (
                     <button
@@ -397,17 +400,17 @@ const Stats = ({ sessions, tags, onDeleteSession, onDeleteTag, onUpdateTag, onAd
                   ))}
                 </div>
                 <button
-                  className="inline-flex items-center justify-center gap-2 py-2.5 px-5 rounded-full coding-regular text-xs border-[1.5px] cursor-pointer transition-all duration-300 bg-primary-blue/70 border-primary-blue/70 text-white hover:bg-primary-blue hover:border-primary-blue hover:-translate-y-px active:translate-y-0 w-full [&_svg]:w-4 [&_svg]:h-4"
+                  className="inline-flex items-center justify-center gap-2 py-1 px-4 rounded-full coding-regular text-xs border-[1.5px] cursor-pointer transition-all duration-300 bg-primary-blue/70 border-primary-blue/70 text-white hover:bg-primary-blue hover:border-primary-blue hover:-translate-y-px active:translate-y-0 w-lg  [&_svg]:w-4 [&_svg]:h-4"
                   onClick={handleAddTag}
                 >
                   <PlusIcon /> add tag
-                </button>
+                </button></div>
               </div>
 
               <p className="serif-regular italic text-text-muted text-sm mb-3">your tasks</p>
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-3">
                 {tags.map(tag => (
-                  <div key={tag.id} className="bg-white rounded-xl transition-all duration-200">
+                  <div key={tag.id} className="bg-white rounded-sm transition-all duration-200 shadow-sm border border-gray-100">
                     {editingTagId === tag.id ? (
                       // Edit mode
                       <div className="p-4 animate-fadeIn">

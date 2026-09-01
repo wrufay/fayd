@@ -177,12 +177,12 @@ const Home = ({ sessions, onStartSession }: HomeProps) => {
     <div className="p-3 sm:p-5 relative z-[1] animate-fadeIn pb-32">
       <header className="mb-4 sm:mb-6 animate-slideDown">
         <p className="serif-regular text-sm sm:text-base italic text-text-muted mb-1">{greeting}{user ? `, ${user.name.split(' ')[0]}` : ''},</p>
-        <h1 className="serif-regular text-lg sm:text-xl text-text-dark">time to <span className="serif-bold">f</span>orget <span className="serif-bold">a</span>bout <span className="serif-bold">y</span>our <span className="serif-bold">d</span>istractions.</h1>
+        <h1 className="serif-regular text-lg sm:text-xl text-text-dark">time to <span className="serif-bold">s</span>top <span className="serif-bold">t</span>hinking <span className="serif-bold">a</span>bout <span className="serif-bold">y</span>our <span className="serif-bold">d</span>istractons.</h1>
       </header>
 
 
       {/* front top container */}
-      <div className="bg-white rounded-lg p-3 sm:p-5 shadow-md mb-3 sm:mb-4 transition-all duration-300 hover:shadow-card-hover bg-gradient-to-br from-white to-cream animate-slideUp">
+      <div className="bg-white rounded-md p-3 sm:p-5 shadow-md mb-3 sm:mb-4 transition-all duration-300 hover:shadow-card-hover bg-gradient-to-br from-white to-cream animate-slideUp">
         <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-5">
           <DonutChart
             data={[{ value: todayStats.focusMinutes, color: '#0466c8' }]}
@@ -231,15 +231,17 @@ const Home = ({ sessions, onStartSession }: HomeProps) => {
         </div>
       </div>
 
+      {/* note: idk why the scale and translate for both active and hover don't work. i want it to have a moving down interaction like yeah the hovering is just weird lol*/}
+      {/* note: on the start working page we could definitely have a cooler interaction animation for the timer/stopwatch change. + everything can be formatted better */}
       <button
-        className="bg-white rounded-md p-3 sm:p-5 shadow-md mb-5 sm:mb-6 transition-all duration-300 !bg-primary-blue/70 !text-white border-none cursor-pointer text-left w-full hover:-translate-y-1 hover:scale-[1.02] hover:shadow-card-hover active:-translate-y-0.5 active:scale-[0.98] animate-slideUp"
+        className="rounded-md p-3 sm:p-5 shadow-md mb-5 sm:mb-6 transition-all duration-300 bg-primary-blue/70 text-white border-none cursor-pointer text-left w-full hover:-translate-y-1 hover:scale-[1.02] hover:shadow-none active:-translate-y-0.5 active:scale-[0.98] animate-slideUp"
         style={{ animationDelay: '0.2s' }}
         onClick={onStartSession}
       >
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="sans-bold text-lg sm:text-xl mb-1 text-white">Start focusing</h3>
-            <p className="serif-regular text-sm sm:text-base italic opacity-90 text-white">let's get things done</p>
+            <h3 className="sans-bold text-lg sm:text-xl mb-1 text-white">Start a session</h3>
+            <p className="serif-regular text-sm sm:text-base italic opacity-90 text-white">go get things done.</p>
           </div>
           <div className="w-10 h-10 sm:w-[50px] sm:h-[50px] bg-white/20 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:bg-white/30">
             <PlayIcon className="w-5 h-5 ml-[3px] text-white" />
