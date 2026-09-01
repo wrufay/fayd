@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { StopwatchIcon, StopIcon, PauseIcon, PlayIcon, CloseIcon } from './Icons'
 import { cn } from '../lib/utils'
 import { storage } from '../lib/platform'
@@ -28,29 +28,47 @@ interface FormattedTime {
 
 const ActiveSession = ({ session, onEndSession, onDiscard }: ActiveSessionProps) => {
   const [showFinishModal, setShowFinishModal] = useState<boolean>(false)
-  const [elapsed, setElapsed] = useState<number>(() => {
-    if (!session) return 0
-    let initialElapsed = session.focusTime || 0
-    if (session.lastUpdateTime && !session.isPaused) {
-      const timeSinceUpdate = Date.now() - session.lastUpdateTime
-      initialElapsed += timeSinceUpdate
-    }
-    return initialElapsed
-  })
   const [isPaused, setIsPaused] = useState<boolean>(session?.isPaused || false)
 
-  // Timer tick
+  // Elapsed time is derived from wall-clock anchors (baseElapsed + time since
+  // resumedAt), not accumulated tick-by-tick. Mobile browsers throttle or
+  // fully suspend setInterval while backgrounded/locked, so a counter that
+  // relies on every tick firing silently falls behind; anchoring to Date.now()
+  // means it self-corrects the moment we get a chance to recompute, no matter
+  // how many ticks were dropped in between.
+  const baseElapsedRef = useRef<number>(session?.focusTime || 0)
+  const resumedAtRef = useRef<number | null>(
+    session && !session.isPaused ? (session.lastUpdateTime || Date.now()) : null
+  )
+
+  const getElapsed = useCallback((): number => {
+    if (resumedAtRef.current === null) return baseElapsedRef.current
+    return baseElapsedRef.current + (Date.now() - resumedAtRef.current)
+  }, [])
+
+  const [elapsed, setElapsed] = useState<number>(getElapsed)
+
+  // Timer tick - recomputed from wall-clock time every second, and also
+  // immediately on visibilitychange so the display snaps to the correct
+  // value as soon as the tab/phone becomes active again instead of waiting
+  // on a possibly still-throttled interval.
   useEffect(() => {
     if (!session) return
 
-    const interval = setInterval(() => {
-      if (!isPaused) {
-        setElapsed(prev => prev + 1000)
-      }
-    }, 1000)
+    const tick = () => setElapsed(getElapsed())
+    tick()
+    const interval = setInterval(tick, 1000)
 
-    return () => clearInterval(interval)
-  }, [isPaused, session])
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible') tick()
+    }
+    document.addEventListener('visibilitychange', handleVisibility)
+
+    return () => {
+      clearInterval(interval)
+      document.removeEventListener('visibilitychange', handleVisibility)
+    }
+  }, [session, getElapsed])
 
   // Save session state to storage periodically
   useEffect(() => {
@@ -59,7 +77,7 @@ const ActiveSession = ({ session, onEndSession, onDiscard }: ActiveSessionProps)
     const saveState = () => {
       const updatedSession: Session = {
         ...session,
-        focusTime: elapsed,
+        focusTime: getElapsed(),
         isPaused,
         lastUpdateTime: Date.now(),
       }
@@ -71,7 +89,7 @@ const ActiveSession = ({ session, onEndSession, onDiscard }: ActiveSessionProps)
     const saveInterval = setInterval(saveState, 2000)
 
     return () => clearInterval(saveInterval)
-  }, [session, elapsed, isPaused])
+  }, [session, isPaused, getElapsed])
 
   const formatTime = useCallback((ms: number): FormattedTime => {
     const totalSeconds = Math.floor(Math.max(0, ms) / 1000)
@@ -95,6 +113,14 @@ const ActiveSession = ({ session, onEndSession, onDiscard }: ActiveSessionProps)
   const isTimeUp = isCountdown && remaining <= 0
 
   const handlePause = () => {
+    const current = getElapsed()
+    if (isPaused) {
+      resumedAtRef.current = Date.now()
+    } else {
+      baseElapsedRef.current = current
+      resumedAtRef.current = null
+    }
+    setElapsed(current)
     setIsPaused(!isPaused)
   }
 
@@ -106,7 +132,7 @@ const ActiveSession = ({ session, onEndSession, onDiscard }: ActiveSessionProps)
     if (!session) return
     const finalSession: Session = {
       ...session,
-      focusTime: elapsed,
+      focusTime: getElapsed(),
     }
     setShowFinishModal(false)
     onEndSession(finalSession)
